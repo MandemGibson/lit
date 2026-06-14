@@ -105,7 +105,7 @@ public class ProjectService {
       return new ResponseDto(400, "User is already a collaborator", null);
     }
     String inviteLink = String.format(
-        "https://lit.bookmie.com/accept-invite?projectId=%s&userId=%s",
+        "http://localhost:5175/accept-invite?projectId=%s&userId=%s",
         project.getId(), user.getId());
     String html = EmailTemplateLoader.loadTemplate("invite.html");
     String msg = html.replace("{{inviteLink}}", inviteLink).replace("{{projectName}}", project.getProjectName());

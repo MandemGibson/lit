@@ -8,7 +8,7 @@ setup(
     # long_description_content_type="text/markdown",
     author="ethenkem",
     author_email="ethenatx@gmail.com",
-    url="https://github.com/ethenkem/lit-envs-source-code/tree/main/lit_cli",
+    url="https://github.com/MandemGibson/lit/lit_cli",
     packages=find_packages(),
     install_requires=["click", "toml", "Halo"],
     classifiers=[

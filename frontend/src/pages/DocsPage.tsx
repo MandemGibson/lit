@@ -25,7 +25,7 @@ const DocsPage: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-300">
                 Visit the{' '}
                 <Link
-                  to="https://github.com/ethenkem/lit-envs-source-code/releases"
+                  to="https://github.com/MandemGibson/lit/releases"
                   target="_blank"
                   className="text-blue-600 hover:underline"
                 >

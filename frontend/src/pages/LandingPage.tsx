@@ -257,7 +257,7 @@ const LandingPage: React.FC = () => {
               >
                 Start For Free
               </Link>
-              <Link target='_blank' to={"https://github.com/ethenkem/lit-source-codes/tree/main"} className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
+              <Link target='_blank' to={"https://github.com/MandemGibson/lit"} className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
                 <Github className="h-5 w-5 mr-2" />
                 View on GitHub
               </Link>
@@ -480,7 +480,7 @@ const LandingPage: React.FC = () => {
               Start For Free
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
-            <Link target='_blank' to={"https://github.com/ethenkem/lit-source-codes/tree/main"} className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
+            <Link target='_blank' to={"https://github.com/MandemGibson/lit"} className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
               <Github className="h-5 w-5 mr-2" />
               Contribute
             </Link>
@@ -523,7 +523,7 @@ const LandingPage: React.FC = () => {
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a target='_blank' href="https://github.com/ethenkem/lit-source-codes/blob/main/README.md" className="hover:text-white transition-colors">About</a></li>
+                <li><a target='_blank' href="https://github.com/MandemGibson/lit/blob/main/README.md" className="hover:text-white transition-colors">About</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
               </ul>
