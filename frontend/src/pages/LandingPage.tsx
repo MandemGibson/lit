@@ -20,6 +20,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import landingImg from "../assets/Animation - 1750827748544.json"
 import Lottie from 'lottie-react';
+import dashboardMockup from '../assets/dashboard_mockup.png';
 
 const LandingPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -184,35 +185,37 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-6 py-20 md:py-28 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-        <div className="md:col-span-7 space-y-6">
-          <div className="inline-flex items-center space-x-2 bg-[#18181b] border border-[#27272a] px-3 py-1 rounded-full">
-            <RxStarFilled className="h-3.5 w-3.5 text-yellow-500" />
-            <span className="text-[10px] font-bold text-zinc-350 tracking-wide uppercase">Used by developer teams</span>
-          </div>
-          
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            Sync your environment secrets.
-            <span className="block text-zinc-500 font-normal mt-1">Simple, clinical clinical security.</span>
-          </h1>
-          
-          <p className="text-sm text-zinc-450 leading-relaxed max-w-lg">
-            Store, collaborate, and push/pull configuration variables with zero-knowledge AES-256 cloud encryption. Integrate your terminal directly using our clean binaries.
-          </p>
-
-          <div className="flex items-center space-x-3 pt-2">
-            <Link to="/signup" className="px-4 py-2 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full transition-colors inline-flex items-center shadow-sm">
-              Get Started for Free <RxArrowRight className="ml-1.5 h-3.5 w-3.5" />
-            </Link>
-            <a target="_blank" rel="noreferrer" href="https://github.com/MandemGibson/lit" className="px-4 py-2 bg-[#18181b] hover:bg-zinc-900 border border-[#27272a] text-zinc-350 text-xs font-semibold rounded-full transition-colors inline-flex items-center">
-              <RxGithubLogo className="mr-2 h-3.5 w-3.5" /> View GitHub
-            </a>
-          </div>
+      <section className="relative overflow-hidden border-b border-[#27272a] py-20 md:py-28">
+        {/* Background Animation */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-15 pointer-events-none select-none overflow-hidden">
+          <Lottie animationData={landingImg} loop autoplay className="w-full h-full object-cover min-w-[800px]" />
         </div>
 
-        {/* Animation container */}
-        <div className="md:col-span-5 flex justify-center bg-[#18181b]/30 border border-[#27272a] rounded-2xl p-6 relative max-w-sm mx-auto overflow-hidden">
-          <Lottie animationData={landingImg} loop autoplay className="w-full h-auto max-h-[260px]" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+          <div className="md:col-span-8 space-y-6">
+            <div className="inline-flex items-center space-x-2 bg-[#18181b] border border-[#27272a] px-3 py-1 rounded-full">
+              <RxStarFilled className="h-3.5 w-3.5 text-yellow-500" />
+              <span className="text-[10px] font-bold text-zinc-350 tracking-wide uppercase">Used by developer teams</span>
+            </div>
+            
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+              Sync your environment secrets.
+              <span className="block text-zinc-500 font-normal mt-1">Simple, clinical security.</span>
+            </h1>
+            
+            <p className="text-sm text-zinc-450 leading-relaxed max-w-lg">
+              Store, collaborate, and push/pull configuration variables with zero-knowledge AES-256 cloud encryption. Integrate your terminal directly using our clean binaries.
+            </p>
+
+            <div className="flex items-center space-x-3 pt-2">
+              <Link to="/signup" className="px-4 py-2 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full transition-colors inline-flex items-center shadow-sm">
+                Get Started for Free <RxArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Link>
+              <a target="_blank" rel="noreferrer" href="https://github.com/MandemGibson/lit" className="px-4 py-2 bg-[#18181b] hover:bg-zinc-900 border border-[#27272a] text-zinc-350 text-xs font-semibold rounded-full transition-colors inline-flex items-center">
+                <RxGithubLogo className="mr-2 h-3.5 w-3.5" /> View GitHub
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -267,13 +270,30 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="max-w-6xl mx-auto px-6 py-20 space-y-12">
+      <section id="features" className="max-w-6xl mx-auto px-6 py-20 space-y-10">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold tracking-tight text-white">Built for security, refined for simplicity</h2>
           <p className="text-xs text-zinc-500 max-w-md mx-auto">No complex configurations. Standard developer flow focusing on secret safety.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Dashboard Mockup Screenshot */}
+        <div className="max-w-4xl mx-auto rounded-xl overflow-hidden border border-[#27272a] bg-[#18181b]/20 p-2 shadow-2xl relative">
+          <div className="bg-[#18181b] px-4 py-2 flex items-center justify-between border-b border-[#27272a] rounded-t-lg">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 rounded-full bg-zinc-850 border border-zinc-700"></div>
+              <div className="w-2 h-2 rounded-full bg-zinc-850 border border-zinc-700"></div>
+              <div className="w-2 h-2 rounded-full bg-zinc-850 border border-zinc-700"></div>
+              <span className="text-[9px] font-bold text-zinc-500 ml-2 uppercase tracking-wider">Lit Envs Dashboard</span>
+            </div>
+          </div>
+          <img
+            src={dashboardMockup}
+            alt="Lit Envs Dashboard Mockup"
+            className="w-full h-auto object-cover rounded-b-lg"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (
