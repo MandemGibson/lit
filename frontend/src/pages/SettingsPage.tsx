@@ -1,77 +1,86 @@
 import React, { useState } from 'react';
-import { User, Shield, Terminal, Bell, Trash2 } from 'lucide-react';
+import { User, Shield, Terminal, Bell, Trash2, Check, Copy } from 'lucide-react';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 import { useAuth } from '../contexts/AuthContext';
 
 const SettingsPage: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
+  const [copied, setCopied] = useState(false);
 
   const tabs = [
-    { id: 'profile', name: 'Profile', icon: User },
-    { id: 'security', name: 'Security', icon: Shield },
-    { id: 'cli', name: 'CLI Access', icon: Terminal },
+    { id: 'profile', name: 'Profile Information', icon: User },
+    { id: 'security', name: 'Security & Auth', icon: Shield },
+    { id: 'cli', name: 'CLI Access & Install', icon: Terminal },
     { id: 'notifications', name: 'Notifications', icon: Bell },
   ];
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText('curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in">
             <div>
-              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                Profile Information
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                Profile Details
               </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                Update your personal information and profile settings.
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+                Update your account email and personal profile details.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-center space-x-4">
                 {user?.avatar ? (
                   <img
-                    className="h-16 w-16 rounded-full object-cover"
+                    className="h-16 w-16 rounded-full object-cover ring-4 ring-blue-500/10"
                     src={user.avatar}
                     alt={user.name}
                   />
                 ) : (
-                  <div className="h-16 w-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold ring-4 ring-blue-500/10">
                     {user?.name ? user.name.substring(0, 2).toUpperCase() : (user?.email ? user.email.substring(0, 2).toUpperCase() : 'U')}
                   </div>
                 )}
-                <button className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500">
-                  Change photo
-                </button>
+                <div>
+                  <button className="px-3.5 py-1.5 border border-gray-250 dark:border-slate-800 text-xs font-semibold rounded-lg text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-850 transition-colors shadow-sm">
+                    Change Photo
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Full name
+                  <label className="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">
+                    Full Name
                   </label>
                   <input
                     type="text"
                     defaultValue={user?.name || ''}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className="block w-full px-3 py-2 border border-gray-250 dark:border-slate-850 bg-white dark:bg-slate-900 text-sm rounded-lg text-gray-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Email address
+                  <label className="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">
+                    Email Address
                   </label>
                   <input
                     type="email"
                     defaultValue={user?.email}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className="block w-full px-3 py-2 border border-gray-250 dark:border-slate-850 bg-white dark:bg-slate-900 text-sm rounded-lg text-gray-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end">
-                <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
-                  Save changes
+              <div className="flex justify-end pt-2">
+                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-750 text-white text-sm font-semibold rounded-lg shadow-md shadow-blue-500/10 transition-colors">
+                  Save Changes
                 </button>
               </div>
             </div>
@@ -80,52 +89,52 @@ const SettingsPage: React.FC = () => {
 
       case 'security':
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in">
             <div>
-              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 Security Settings
               </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                Manage your account security and password.
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+                Change your credentials or enable account-level protection modules.
               </p>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white">
-                  Change Password
+            <div className="space-y-5">
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                  Update Password
                 </h4>
-                <div className="mt-2 space-y-3">
+                <div className="grid grid-cols-1 gap-3">
                   <input
                     type="password"
                     placeholder="Current password"
-                    className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className="block w-full px-3 py-2 border border-gray-250 dark:border-slate-850 bg-white dark:bg-slate-900 text-sm rounded-lg text-gray-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                   <input
                     type="password"
                     placeholder="New password"
-                    className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className="block w-full px-3 py-2 border border-gray-250 dark:border-slate-850 bg-white dark:bg-slate-900 text-sm rounded-lg text-gray-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                   <input
                     type="password"
                     placeholder="Confirm new password"
-                    className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className="block w-full px-3 py-2 border border-gray-250 dark:border-slate-850 bg-white dark:bg-slate-900 text-sm rounded-lg text-gray-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
-                  <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
-                    Update password
-                  </button>
                 </div>
+                <button className="px-4 py-2 bg-blue-650 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors mt-2">
+                  Update Password
+                </button>
               </div>
 
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white">
-                  Two-Factor Authentication
+              <div className="border-t border-gray-150 dark:border-slate-850 pt-5">
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+                  Two-Factor Authentication (2FA)
                 </h4>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Add an extra layer of security to your account
+                <p className="mt-1 text-xs text-gray-550 dark:text-slate-400">
+                  Secure your projects with secondary dynamic login tokens.
                 </p>
-                <button className="mt-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500 border border-blue-300 rounded-md">
-                  Enable 2FA
+                <button className="mt-3 px-3.5 py-1.5 border border-blue-200 dark:border-blue-900 text-xs font-semibold rounded-lg text-blue-600 dark:text-blue-400 bg-blue-50/20 dark:bg-blue-950/10 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors">
+                  Enable 2FA Protection
                 </button>
               </div>
             </div>
@@ -134,56 +143,69 @@ const SettingsPage: React.FC = () => {
 
       case 'cli':
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in">
             <div>
-              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                CLI Access Tokens
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                CLI Access & Configuration
               </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                Manage tokens for CLI access to your projects.
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+                Install the command-line helper to sync and pull environment secrets instantly inside local projects.
               </p>
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4">
-              <h4 className="text-sm font-medium text-blue-800 dark:text-blue-400">
-                Install the CLI
-              </h4>
-              <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
-                Run this command in your terminal to install the Lit CLI:
-              </p>
-              <code className="mt-2 block p-2 bg-white dark:bg-gray-800 rounded border text-sm font-mono select-all">
-                curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh
-              </code>
+            {/* Mock macOS Terminal for curl command */}
+            <div className="rounded-xl overflow-hidden border border-gray-250 dark:border-slate-800 shadow-md">
+              <div className="bg-gray-150 dark:bg-[#1f2937] px-4 py-2 flex items-center justify-between border-b border-gray-200 dark:border-slate-800">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-[11px] font-semibold text-gray-500 dark:text-slate-400 ml-2">Terminal</span>
+                </div>
+                <button
+                  onClick={handleCopy}
+                  className="p-1 rounded text-gray-400 hover:text-gray-650 hover:bg-gray-200 dark:hover:bg-slate-800 transition-all"
+                  title="Copy command"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+              <div className="bg-[#0B0F19] p-5 font-mono text-sm leading-relaxed text-slate-100 overflow-auto select-all">
+                <span className="text-blue-400">$</span> curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh
+              </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5 border-t border-gray-150 dark:border-slate-850 pt-5">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white">
-                  Active Tokens
-                </h4>
-                <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
-                  Generate new token
+                <div>
+                  <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+                    Personal Access Tokens
+                  </h4>
+                  <p className="text-xs text-gray-550 dark:text-slate-450 mt-0.5">
+                    Authorized tokens used to authenticate CLI pull/push commands.
+                  </p>
+                </div>
+                <button className="px-3 py-1.5 bg-blue-600 hover:bg-blue-750 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors">
+                  Generate Token
                 </button>
               </div>
 
-              <div className="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
-                <div className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Personal Access Token
-                      </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Created 2 days ago • Last used 1 hour ago
-                      </p>
-                    </div>
-                    <button className="text-red-600 hover:text-red-700 text-sm">
-                      Revoke
-                    </button>
+              <div className="bg-gray-50 dark:bg-slate-900/40 border border-gray-150 dark:border-slate-850 rounded-xl p-4 divide-y divide-gray-100 dark:divide-slate-800">
+                <div className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-slate-200">
+                      Default Developer CLI Token
+                    </p>
+                    <p className="text-[11px] text-gray-450 dark:text-slate-500 mt-0.5">
+                      Created 2 days ago • Last used 1 hour ago
+                    </p>
+                    <code className="mt-2 block p-1.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-md text-xs font-mono text-gray-500 dark:text-slate-450 w-fit">
+                      se_••••••••••••••••••••••••••••••••
+                    </code>
                   </div>
-                  <code className="mt-2 block p-2 bg-gray-100 dark:bg-gray-700 rounded text-sm font-mono">
-                    se_••••••••••••••••••••••••••••••••
-                  </code>
+                  <button className="text-xs font-bold text-red-600 hover:text-red-750 hover:bg-red-50 dark:hover:bg-red-950/20 px-2.5 py-1.5 rounded-lg transition-colors">
+                    Revoke
+                  </button>
                 </div>
               </div>
             </div>
@@ -192,68 +214,68 @@ const SettingsPage: React.FC = () => {
 
       case 'notifications':
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in">
             <div>
-              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 Notification Preferences
               </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                Choose what notifications you want to receive.
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+                Decide what alerts and status updates you want to receive.
               </p>
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-3.5 bg-gray-50 dark:bg-slate-900/20 rounded-xl border border-gray-150 dark:border-slate-850">
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    Environment variable changes
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">
+                    Environment Secret Updates
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Get notified when variables are added, updated, or deleted
+                  <p className="text-xs text-gray-500 dark:text-slate-450 mt-0.5">
+                    Notify when keys are added, updated, or removed from your projects.
                   </p>
                 </div>
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4.5 w-4.5 text-blue-600 focus:ring-blue-500 border-gray-305 dark:border-slate-700 bg-white dark:bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-3.5 bg-gray-50 dark:bg-slate-900/20 rounded-xl border border-gray-150 dark:border-slate-850">
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    Team invitations
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">
+                    Collaboration Requests
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Get notified when you're invited to a project
+                  <p className="text-xs text-gray-500 dark:text-slate-450 mt-0.5">
+                    Notify when you are invited to join other team projects.
                   </p>
                 </div>
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4.5 w-4.5 text-blue-600 focus:ring-blue-500 border-gray-305 dark:border-slate-700 bg-white dark:bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-3.5 bg-gray-50 dark:bg-slate-900/20 rounded-xl border border-gray-150 dark:border-slate-850">
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    CLI activity
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">
+                    CLI Push/Pull Activity
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Get notified about CLI sync activities
+                  <p className="text-xs text-gray-500 dark:text-slate-450 mt-0.5">
+                    Notify when CLI runs pull/push operations against your projects.
                   </p>
                 </div>
                 <input
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4.5 w-4.5 text-blue-600 focus:ring-blue-500 border-gray-305 dark:border-slate-700 bg-white dark:bg-slate-900 rounded cursor-pointer"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
-                Save preferences
+            <div className="flex justify-end pt-2">
+              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-750 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors">
+                Save Preferences
               </button>
             </div>
           </div>
@@ -266,59 +288,58 @@ const SettingsPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-8 animate-fade-in">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             Settings
           </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Manage your account settings and preferences
+          <p className="mt-1 text-sm text-gray-500 dark:text-slate-450">
+            Manage your account preferences, credentials, and CLI binaries.
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Sidebar */}
-          <div className="lg:w-64">
-            <nav className="space-y-1">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                      activeTab === tab.id
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                        : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <Icon className="h-5 w-5 mr-3" />
-                    {tab.name}
-                  </button>
-                );
-              })}
-            </nav>
+          <div className="w-full lg:w-64 bg-white dark:bg-[#111827] border border-gray-200/60 dark:border-slate-800/60 rounded-xl p-3 shadow-sm space-y-1">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 font-bold'
+                      : 'text-gray-650 hover:bg-gray-50 dark:text-slate-400 dark:hover:bg-slate-800 hover:text-gray-900'
+                  }`}
+                >
+                  <Icon className="h-4.5 w-4.5 mr-3 text-gray-400" />
+                  {tab.name}
+                </button>
+              );
+            })}
           </div>
 
           {/* Content */}
-          <div className="flex-1">
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <div className="flex-1 w-full space-y-6">
+            <div className="bg-white dark:bg-[#111827] border border-gray-200/60 dark:border-slate-800/60 rounded-xl p-6 shadow-sm">
               {renderTabContent()}
             </div>
 
             {/* Danger Zone */}
-            <div className="mt-6 bg-white dark:bg-gray-800 shadow rounded-lg p-6 border border-red-200 dark:border-red-800">
-              <div className="flex items-center">
-                <Trash2 className="h-5 w-5 text-red-500 mr-2" />
-                <h3 className="text-lg font-medium text-red-900 dark:text-red-400">
+            <div className="bg-white dark:bg-[#111827] border border-red-200 dark:border-red-900/60 rounded-xl p-6 shadow-sm">
+              <div className="flex items-center space-x-2.5">
+                <Trash2 className="h-5 w-5 text-red-500" />
+                <h3 className="text-lg font-bold text-red-700 dark:text-red-400">
                   Danger Zone
                 </h3>
               </div>
-              <p className="mt-2 text-sm text-red-700 dark:text-red-300">
-                Once you delete your account, there is no going back. All your projects and data will be permanently deleted.
+              <p className="mt-2 text-xs text-gray-550 dark:text-slate-400 leading-relaxed max-w-2xl">
+                Permanently delete your Lit Envs account. This action is irreversible, and all encrypted project variables, collaboration logs, and access tokens will be destroyed immediately.
               </p>
-              <button className="mt-4 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md">
-                Delete account
+              <button className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-red-500">
+                Delete Account
               </button>
             </div>
           </div>

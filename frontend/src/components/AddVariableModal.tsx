@@ -28,7 +28,7 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
     setIsLoading(true);
 
     const res = await axios.put(`${BACKEND_URL}/projects/update-env-data/${projectId}/`, {
-      envData: JSON.stringify(envVars)
+      envData: envVars
     }, {
       headers: {
         Authorization: `Bearer ${user?.token}`
