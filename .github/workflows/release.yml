@@ -25,26 +25,26 @@ jobs:
       - name: Build Binaries
         run: |
           mkdir -p dist
+          cd lit_cli_v2
           
           # Compile for macOS (Darwin)
-          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o dist/lit-darwin-amd64 ./lit_cli_v2
-          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o dist/lit-darwin-arm64 ./lit_cli_v2
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o ../dist/lit-darwin-amd64 .
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ../dist/lit-darwin-arm64 .
           
           # Compile for Linux
-          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o dist/lit-linux-amd64 ./lit_cli_v2
-          GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o dist/lit-linux-arm64 ./lit_cli_v2
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../dist/lit-linux-amd64 .
+          GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o ../dist/lit-linux-arm64 .
           
           # Compile for Windows
-          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o dist/lit-windows-amd64.exe ./lit_cli_v2
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ../dist/lit-windows-amd64.exe .
           
           # Compress binaries into archives
-          cd dist
+          cd ../dist
           tar -czf lit-darwin-amd64.tar.gz lit-darwin-amd64
           tar -czf lit-darwin-arm64.tar.gz lit-darwin-arm64
           tar -czf lit-linux-amd64.tar.gz lit-linux-amd64
           tar -czf lit-linux-arm64.tar.gz lit-linux-arm64
           zip lit-windows-amd64.zip lit-windows-amd64.exe
-          cd ..
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
