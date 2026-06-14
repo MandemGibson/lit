@@ -15,6 +15,7 @@ public class CorsConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
     config.addAllowedOrigin("https://lit.bookmie.com");
+    config.addAllowedOrigin("http://localhost:5175");
     config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     config.setAllowCredentials(false);

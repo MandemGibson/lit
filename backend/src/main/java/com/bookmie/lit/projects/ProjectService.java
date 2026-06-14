@@ -64,8 +64,15 @@ public class ProjectService {
 
   public ResponseDto pullEnvContent(String projectId) {
     Optional<ProjectModel> project = this.projectRepo.findById(projectId);
-    String decryptedEnv = this.operations.decryptEnvData(project.get().getDotEnvData());
-    return new ResponseDto(200, "successfull", decryptedEnv);
+    if (project.isEmpty()) {
+      return new ResponseDto(404, "Project not found", null);
+    }
+    String dotEnvData = project.get().getDotEnvData();
+    if (dotEnvData == null || dotEnvData.isEmpty()) {
+      return new ResponseDto(200, "successful", "");
+    }
+    String decryptedEnv = this.operations.decryptEnvData(dotEnvData);
+    return new ResponseDto(200, "successful", decryptedEnv);
   }
 
   public ResponseDto updateEnvData(String projectId, String envData, String userId) {

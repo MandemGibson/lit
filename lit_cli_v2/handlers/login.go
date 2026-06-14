@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	// apiBackend = "http://localhost:8080"
-	apiBackend = "https://lit-backend-479881079038.europe-west1.run.app"
+	apiBackend = "http://localhost:8080"
+	// apiBackend = "https://lit-backend-479881079038.europe-west1.run.app"
 	apiURL     = apiBackend + "/auths/obtain-token"
 	timeout    = 40 * time.Second
 	configFile = ".lit_env_data.toml"
