@@ -1,0 +1,12 @@
+[project]
+name = "lit"
+version = "0.1.0"
+description = "A CLI tool for Lit Envs"
+dependencies = [
+    "click",
+    "toml",
+    "Halo"
+]
+
+[project.scripts]
+lit = "main.cli:main_cli"
