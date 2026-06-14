@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Loader2, Mail } from 'lucide-react';
+import { RxCross2, RxReload, RxEnvelopeClosed } from 'react-icons/rx';
 import axios from 'axios';
 import { BACKEND_URL } from '../configs/constants';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 interface InviteUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  projectId: string
+  projectId: string;
 }
 
 const InviteUserModal: React.FC<InviteUserModalProps> = ({
@@ -16,16 +16,16 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   projectId,
 }) => {
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState<'editor' | 'viewer'>('viewer');
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState<string | null>(null)
-  const { user } = useAuth()
+  const [err, setErr] = useState<string | null>(null);
+  const { user } = useAuth();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErr(null);
     try {
       console.log(projectId);
-
       const res = await axios.post(`${BACKEND_URL}/projects/invite`, {
         email: email,
         projectId: projectId
@@ -33,128 +33,83 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
         headers: {
           Authorization: `Bearer ${user?.token}`
         },
-      }
-      )
-      if (res.status == 200) {
-        alert("Invitation sent")
-      } else {
+      });
 
-        setErr(res.data.message)
+      if (res.status === 200) {
+        alert("Invitation sent");
+        setEmail('');
+        setIsLoading(false);
+        onClose();
+      } else {
+        setErr(res.data.message);
+        setIsLoading(false);
       }
     } catch (err: any) {
-      //console.log(err);
-      setErr(err.response.data.message)
-      alert(err.response.data.message)
-
+      const errMsg = err.response?.data?.message || 'Failed to send invitation';
+      setErr(errMsg);
+      alert(errMsg);
+      setIsLoading(false);
     }
-
-
-    //onSubmit(email, role);
-    setEmail('');
-    setRole('viewer');
-    setIsLoading(false);
-    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-[#18181b] border border-[#27272a] rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
+        <div className="flex items-center justify-between p-5 border-b border-[#27272a]">
+          <h3 className="text-sm font-bold text-[#f4f4f5]">
             Invite Team Member
           </h3>
-          {err && <p className="text-lg font-medium text-gray-900 dark:text-white">
-            {err}
-          </p>}
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            className="text-zinc-400 hover:text-white transition-colors p-1 rounded-full hover:bg-zinc-800"
           >
-            <X className="h-5 w-5" />
+            <RxCross2 className="h-4 w-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          {err && (
+            <div className="bg-red-950/20 border border-red-900 text-red-400 px-3 py-2 rounded-lg text-xs font-semibold">
+              {err}
+            </div>
+          )}
+
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="email" className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
               Email Address
             </label>
-            <div className="mt-1 relative">
+            <div className="relative">
               <input
                 id="email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-10 pr-3 py-1.5 border border-[#27272a] bg-[#09090b] text-xs rounded-lg text-[#f4f4f5] placeholder-zinc-650 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
                 placeholder="colleague@example.com"
               />
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <RxEnvelopeClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
             </div>
           </div>
 
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Role
-            </label>
-            <div className="mt-2 space-y-2">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="role"
-                  value="viewer"
-                  checked={role === 'viewer'}
-                  onChange={(e) => setRole(e.target.value as 'editor' | 'viewer')}
-                  className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
-                />
-                <span className="ml-3">
-                  <span className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Viewer
-                  </span>
-                  <span className="block text-sm text-gray-500 dark:text-gray-400">
-                    Can view environment variables but cannot edit
-                  </span>
-                </span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="role"
-                  value="editor"
-                  checked={role === 'editor'}
-                  onChange={(e) => setRole(e.target.value as 'editor' | 'viewer')}
-                  className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
-                />
-                <span className="ml-3">
-                  <span className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Editor
-                  </span>
-                  <span className="block text-sm text-gray-500 dark:text-gray-400">
-                    Can view and edit environment variables
-                  </span>
-                </span>
-              </label>
-            </div>
-          </div> */}
-
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex justify-end space-x-3 pt-4 border-t border-[#27272a]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600"
+              className="px-3.5 py-1.5 text-xs font-semibold text-zinc-300 bg-[#09090b] border border-[#27272a] rounded-full hover:bg-zinc-900 transition-colors duration-150"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading || !email.trim()}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              className="px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors duration-150"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <RxReload className="h-3.5 w-3.5 mr-2 animate-spin text-white" />
                   Sending...
                 </>
               ) : (

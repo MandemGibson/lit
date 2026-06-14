@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home,
-  Settings,
-  LogOut,
-  Shield,
-  User,
-  ChevronDown
-} from 'lucide-react';
+  RxDashboard,
+  RxGear,
+  RxExit,
+  RxPerson,
+  RxChevronDown,
+  RxLockClosed,
+  RxLayers,
+  RxFileText,
+  RxActivityLog
+} from 'react-icons/rx';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface DashboardLayoutProps {
@@ -18,6 +21,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -25,95 +29,122 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   };
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Settings', href: '/settings', icon: Settings },
+    { name: 'Overview', href: '/dashboard', icon: RxDashboard },
+    { name: 'Environments', href: '#', icon: RxLayers, disabled: true },
+    { name: 'Secrets', href: '#', icon: RxLockClosed, active: true },
+    { name: 'Policies', href: '#', icon: RxFileText, disabled: true },
+    { name: 'Access Logs', href: '#', icon: RxActivityLog, disabled: true },
+    { name: 'Settings', href: '/settings', icon: RxGear },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-gray-900 dark:text-gray-100 transition-colors duration-200">
-      {/* Navigation Header */}
-      <nav className="sticky top-0 z-40 bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-md border-b border-gray-200/60 dark:border-slate-800/60 transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="flex items-center space-x-2.5 group">
-                <div className="bg-blue-600 dark:bg-blue-500 p-1.5 rounded-lg group-hover:scale-105 transition-transform duration-200">
-                  <Shield className="h-5 w-5 text-white" />
-                </div>
-                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                  Lit Envs
-                </span>
-              </Link>
-
-              <div className="hidden md:ml-10 md:flex md:space-x-8">
-                {navigation.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-all duration-200 ${isActive
-                          ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400 font-semibold'
-                          : 'text-gray-500 dark:text-slate-400 border-transparent hover:text-gray-700 dark:hover:text-slate-200 hover:border-gray-300 dark:hover:border-slate-700'
-                        }`}
-                    >
-                      <Icon className="h-4 w-4 mr-2" />
-                      {item.name}
-                    </Link>
-                  );
-                })}
+    <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] flex flex-col md:flex-row font-sans">
+      {/* Sidebar navigation */}
+      <aside className="w-full md:w-64 bg-[#18181b] border-b md:border-b-0 md:border-r border-[#27272a] flex flex-col justify-between flex-shrink-0 z-35">
+        <div>
+          {/* Header Brand */}
+          <div className="h-16 flex items-center px-6 border-b border-[#27272a]">
+            <Link to="/" className="flex items-center space-x-2.5 group">
+              <div className="bg-[#27272a] p-1.5 rounded-lg border border-[#3f3f46]">
+                <RxLockClosed className="h-5 w-5 text-white" />
               </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="relative group">
-                <button className="flex items-center space-x-2.5 py-1 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-850 transition-colors duration-200 focus:outline-none">
-                  {user?.avatar ? (
-                    <img
-                      className="h-8 w-8 rounded-full object-cover ring-2 ring-blue-500/20"
-                      src={user.avatar}
-                      alt={user.name}
-                    />
-                  ) : (
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold ring-2 ring-blue-500/20">
-                      {user?.name ? user.name.substring(0, 2).toUpperCase() : (user?.email ? user.email.substring(0, 2).toUpperCase() : 'U')}
-                    </div>
-                  )}
-                  <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-slate-200">{user?.name}</span>
-                  <ChevronDown className="h-4 w-4 text-gray-400 group-hover:text-gray-650 transition-colors duration-200" />
-                </button>
-
-                {/* Dropdown Menu */}
-                <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-xl py-1.5 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-1 group-hover:translate-y-0 transition-all duration-200">
-                  <div className="px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-slate-400 border-b border-gray-100 dark:border-slate-800">
-                    <p className="truncate text-gray-800 dark:text-slate-200">{user?.name}</p>
-                    <p className="truncate text-[10px] text-gray-400 dark:text-slate-500 font-normal mt-0.5">{user?.email}</p>
-                  </div>
-                  <Link
-                    to="/settings"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors"
-                  >
-                    <User className="h-4 w-4 mr-2.5 text-gray-400" />
-                    Profile Settings
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-650 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors text-left"
-                  >
-                    <LogOut className="h-4 w-4 mr-2.5 text-red-400 dark:text-red-400" />
-                    Sign out
-                  </button>
-                </div>
-              </div>
-            </div>
+              <span className="text-md font-bold tracking-tight text-[#f4f4f5]">
+                Lit Envs
+              </span>
+            </Link>
           </div>
-        </div>
-      </nav>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="animate-fade-in">
+          {/* Navigation Links */}
+          <nav className="p-4 space-y-1">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              const isCurrent = location.pathname === item.href || (item.active && location.pathname.startsWith('/project/'));
+              
+              if (item.disabled) {
+                return (
+                  <div
+                    key={item.name}
+                    className="flex items-center px-3 py-2 text-xs font-semibold text-zinc-650 cursor-not-allowed select-none space-x-3"
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center px-3 py-2 text-xs font-semibold rounded-lg transition-colors space-x-3 ${
+                    isCurrent
+                      ? 'bg-[#27272a] text-white'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Bottom Profile Section */}
+        <div className="p-4 border-t border-[#27272a] relative">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus:outline-none"
+            >
+              {user?.avatar ? (
+                <img
+                  className="h-8 w-8 rounded-full object-cover border border-[#27272a]"
+                  src={user.avatar}
+                  alt={user.name}
+                />
+              ) : (
+                <div className="h-8 w-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-100 text-xs font-bold">
+                  {user?.name ? user.name.substring(0, 2).toUpperCase() : (user?.email ? user.email.substring(0, 2).toUpperCase() : 'U')}
+                </div>
+              )}
+              <div className="text-left max-w-[120px]">
+                <p className="text-xs font-semibold text-[#f4f4f5] truncate">{user?.name}</p>
+                <div className="flex items-center text-[10px] text-zinc-500 font-medium mt-0.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-550 mr-1.5"></span>
+                  online
+                </div>
+              </div>
+              <RxChevronDown className="h-3.5 w-3.5 text-zinc-400" />
+            </button>
+          </div>
+
+          {/* Profile Dropdown */}
+          {dropdownOpen && (
+            <div className="absolute left-4 bottom-16 right-4 bg-[#18181b] border border-[#27272a] rounded-xl shadow-xl py-1 z-50 animate-fade-in">
+              <Link
+                to="/settings"
+                onClick={() => setDropdownOpen(false)}
+                className="flex items-center px-4 py-2 text-xs font-semibold text-zinc-350 hover:bg-zinc-900 transition-colors"
+              >
+                <RxPerson className="h-4 w-4 mr-2.5 text-zinc-400" />
+                Profile Settings
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center w-full px-4 py-2 text-xs font-semibold text-red-400 hover:bg-red-950/20 transition-colors text-left"
+              >
+                <RxExit className="h-4 w-4 mr-2.5 text-red-400" />
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 min-w-0 overflow-y-auto py-8 px-6 md:px-8">
+        <div className="max-w-5xl">
           {children}
         </div>
       </main>
@@ -122,4 +153,3 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 };
 
 export default DashboardLayout;
-

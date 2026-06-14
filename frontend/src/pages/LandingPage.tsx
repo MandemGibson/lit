@@ -1,27 +1,25 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Shield,
-  Lock,
-  Users,
-  Terminal,
-  Zap,
-  Globe,
-  CheckCircle,
-  ArrowRight,
-  Menu,
-  X,
-  Star,
-  Github,
-  Twitter,
-  Eye,
-  EyeOff,
-  Copy
-} from 'lucide-react';
+  RxLockClosed,
+  RxPerson,
+  RxCode,
+  RxGlobe,
+  RxCheckCircled,
+  RxArrowRight,
+  RxHamburgerMenu,
+  RxCross1,
+  RxStarFilled,
+  RxGithubLogo,
+  RxTwitterLogo,
+  RxEyeOpen,
+  RxEyeNone,
+  RxCopy,
+  RxCheck
+} from 'react-icons/rx';
 import { useAuth } from '../contexts/AuthContext';
 import landingImg from "../assets/Animation - 1750827748544.json"
 import Lottie from 'lottie-react';
-//import { useTheme } from '../contexts/ThemeContext';
 
 const LandingPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,55 +35,52 @@ const LandingPage: React.FC = () => {
 
   const features = [
     {
-      icon: Shield,
-      title: 'Military-Grade Encryption',
-      description: 'Your environment variables are encrypted at rest and in transit using AES-256 encryption.'
+      icon: RxLockClosed,
+      title: 'AES-256 Encryption',
+      description: 'Your environment secrets are securely encrypted at rest and in transit.'
     },
     {
-      icon: Users,
-      title: 'Team Collaboration',
-      description: 'Invite team members with granular permissions. Control who can view, edit, or manage your secrets.'
+      icon: RxPerson,
+      title: 'Granular Access',
+      description: 'Invite collaborators to sync environment variables with absolute safety.'
     },
     {
-      icon: Terminal,
-      title: 'CLI Integration',
-      description: 'Seamlessly sync your environment variables with our powerful CLI tool. Deploy with confidence.'
+      icon: RxCode,
+      title: 'Powerful CLI Tool',
+      description: 'Run syncs and pulls directly from local terminal prompts.'
     },
     {
-      icon: Globe,
+      icon: RxGlobe,
       title: 'Multi-Environment',
-      description: 'Manage variables across development, staging, and production environments effortlessly.'
+      description: 'Switch between Development, Staging, and Production environments instantly.'
     },
     {
-      icon: Zap,
-      title: 'Lightning Fast',
-      description: 'Built for performance. Access your variables instantly with our global CDN infrastructure.'
+      icon: RxCheckCircled,
+      title: 'Clinical Audit Logs',
+      description: 'Monitor every single push, pull, and access event in real-time.'
     },
     {
-      icon: Lock,
-      title: 'Zero-Knowledge',
-      description: 'We never see your secrets in plain text. Your data is encrypted before it reaches our servers.'
+      icon: RxLockClosed,
+      title: 'Zero-Knowledge Storage',
+      description: 'We store encrypted byte strings and never see keys in plain text.'
     }
   ];
 
   const testimonials = [
     {
       name: 'Sarah Chen',
-      role: 'Lead Developer at TechCorp',
-      avatar: 'https://ui-avatars.com/api/?name=Sarah+Chen&background=3B82F6&color=fff',
-      content: 'Lit Envs transformed how we manage secrets across our microservices. The CLI integration is seamless.'
+      role: 'Lead Developer, TechCorp',
+      content: 'Lit Envs transformed how we sync project variables. The CLI is incredibly fast and secure.'
     },
     {
       name: 'Marcus Rodriguez',
-      role: 'DevOps Engineer at StartupXYZ',
-      avatar: 'https://ui-avatars.com/api/?name=Marcus+Rodriguez&background=10B981&color=fff',
-      content: 'Finally, a secure way to share environment variables with the team. The encryption gives us peace of mind.'
+      role: 'DevOps Lead, StartupXYZ',
+      content: 'Finally, a clean vault interface that shares secrets without complex cloud setups.'
     },
     {
       name: 'Emily Watson',
-      role: 'CTO at InnovateLabs',
-      avatar: 'https://ui-avatars.com/api/?name=Emily+Watson&background=F59E0B&color=fff',
-      content: 'The best investment we made for our security infrastructure. Simple, secure, and developer-friendly.'
+      role: 'CTO, InnovateLabs',
+      content: 'Best workflow tool for setting up local development environments. Minimalist and robust.'
     }
   ];
 
@@ -93,276 +88,282 @@ const LandingPage: React.FC = () => {
     {
       name: 'Developer',
       price: 'Free',
-      description: 'Perfect for personal projects',
-      features: [
-        '3 projects',
-        '50 environment variables',
-        'Basic encryption',
-        'CLI access',
-        'Community support'
-      ],
+      description: 'For personal projects',
+      features: ['3 projects', '50 variables', 'AES encryption', 'CLI access'],
       cta: 'Get Started',
       popular: false
     },
     {
       name: 'Team',
       price: '$29',
-      period: '/month',
-      description: 'Great for small teams',
-      features: [
-        'Unlimited projects',
-        '1,000 environment variables',
-        'Advanced encryption',
-        'Team collaboration',
-        'Priority support',
-        'Audit logs'
-      ],
+      period: '/mo',
+      description: 'For active startups',
+      features: ['Unlimited projects', '1,000 variables', 'Advanced audit logs', 'Team sharing'],
       cta: 'Start Free Trial',
       popular: true
     },
     {
       name: 'Enterprise',
       price: 'Custom',
-      description: 'For large organizations',
-      features: [
-        'Everything in Team',
-        'Unlimited variables',
-        'SSO integration',
-        'Advanced compliance',
-        'Dedicated support',
-        'Custom integrations'
-      ],
+      description: 'For compliance environments',
+      features: ['Unlimited variables', 'Dedicated support', 'SSO authentication', 'Custom API access'],
       cta: 'Contact Sales',
       popular: false
     }
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Navigation */}
-      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-900/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/" className="flex items-center space-x-2">
-                <Shield className="h-8 w-8 text-blue-600" />
-                <span className="text-xl font-bold text-gray-900 dark:text-white">
-                  Lit Envs
-                </span>
-              </Link>
+    <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans selection:bg-zinc-800 transition-colors duration-200">
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2.5">
+            <div className="bg-[#18181b] p-1 rounded-md border border-[#27272a]">
+              <RxLockClosed className="h-4.5 w-4.5 text-white" />
             </div>
+            <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
+              Lit Envs
+            </span>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Features
-              </a>
-              <a href="/docs" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Docs
-              </a>
-              <a href="#testimonials" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Testimonials
-              </a>
-
-              {!user?.email ?
-                <>
-                  <Link
-                    to="/login"
-                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Get Started
-                  </Link>
-                </>
-                :
-                <Link
-                  to="/dashboard"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Dashboard
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center space-x-6">
+            <a href="#features" className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors">Features</a>
+            <a href="/docs" className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors">Docs</a>
+            <a href="#pricing" className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors">Pricing</a>
+            <span className="w-px h-4 bg-[#27272a]"></span>
+            
+            {!user?.email ? (
+              <>
+                <Link to="/login" className="text-xs font-semibold text-zinc-450 hover:text-white transition-colors">
+                  Sign In
                 </Link>
-              }
-            </div>
+                <Link to="/signup" className="px-3.5 py-1.5 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full transition-colors">
+                  Get Started
+                </Link>
+              </>
+            ) : (
+              <Link to="/dashboard" className="px-3.5 py-1.5 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full transition-colors">
+                Dashboard
+              </Link>
+            )}
+          </nav>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
+          {/* Mobile Nav Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-1 text-zinc-400 hover:text-white focus:outline-none"
+          >
+            {isMenuOpen ? <RxCross1 className="h-5 w-5" /> : <RxHamburgerMenu className="h-5 w-5" />}
+          </button>
+        </div>
+
+        {/* Mobile Navigation Dropdown */}
+        {isMenuOpen && (
+          <div className="md:hidden border-b border-[#27272a] bg-[#09090b] px-6 py-4 space-y-3 flex flex-col">
+            <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-xs font-semibold text-zinc-400 hover:text-white">Features</a>
+            <a href="/docs" onClick={() => setIsMenuOpen(false)} className="text-xs font-semibold text-zinc-400 hover:text-white">Docs</a>
+            <a href="#pricing" onClick={() => setIsMenuOpen(false)} className="text-xs font-semibold text-zinc-400 hover:text-white">Pricing</a>
+            <div className="h-px bg-[#27272a] my-2"></div>
+            {!user?.email ? (
+              <>
+                <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-xs font-semibold text-zinc-400 hover:text-white">
+                  Sign In
+                </Link>
+                <Link to="/signup" onClick={() => setIsMenuOpen(false)} className="px-3 py-2 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full text-center">
+                  Get Started
+                </Link>
+              </>
+            ) : (
+              <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="px-3 py-2 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full text-center">
+                Dashboard
+              </Link>
+            )}
+          </div>
+        )}
+      </header>
+
+      {/* Hero Section */}
+      <section className="max-w-6xl mx-auto px-6 py-20 md:py-28 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+        <div className="md:col-span-7 space-y-6">
+          <div className="inline-flex items-center space-x-2 bg-[#18181b] border border-[#27272a] px-3 py-1 rounded-full">
+            <RxStarFilled className="h-3.5 w-3.5 text-yellow-500" />
+            <span className="text-[10px] font-bold text-zinc-350 tracking-wide uppercase">Used by developer teams</span>
+          </div>
+          
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            Sync your environment secrets.
+            <span className="block text-zinc-500 font-normal mt-1">Simple, clinical clinical security.</span>
+          </h1>
+          
+          <p className="text-sm text-zinc-450 leading-relaxed max-w-lg">
+            Store, collaborate, and push/pull configuration variables with zero-knowledge AES-256 cloud encryption. Integrate your terminal directly using our clean binaries.
+          </p>
+
+          <div className="flex items-center space-x-3 pt-2">
+            <Link to="/signup" className="px-4 py-2 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full transition-colors inline-flex items-center shadow-sm">
+              Get Started for Free <RxArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Link>
+            <a target="_blank" rel="noreferrer" href="https://github.com/MandemGibson/lit" className="px-4 py-2 bg-[#18181b] hover:bg-zinc-900 border border-[#27272a] text-zinc-350 text-xs font-semibold rounded-full transition-colors inline-flex items-center">
+              <RxGithubLogo className="mr-2 h-3.5 w-3.5" /> View GitHub
+            </a>
+          </div>
+        </div>
+
+        {/* Animation container */}
+        <div className="md:col-span-5 flex justify-center bg-[#18181b]/30 border border-[#27272a] rounded-2xl p-6 relative max-w-sm mx-auto overflow-hidden">
+          <Lottie animationData={landingImg} loop autoplay className="w-full h-auto max-h-[260px]" />
+        </div>
+      </section>
+
+      {/* Terminal Command Line Section */}
+      <section className="bg-[#18181b]/30 border-y border-[#27272a] py-20">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+          <div className="md:col-span-5 space-y-4">
+            <h2 className="text-xl font-bold text-white tracking-tight">One-Line installation</h2>
+            <p className="text-xs text-zinc-450 leading-relaxed">
+              Install the Lit Envs command-line tool instantly. Access environment sync options across Darwin, Linux, or Windows terminals.
+            </p>
+            <div className="pt-2 flex flex-col space-y-2">
+              <div className="flex items-center text-[11px] text-zinc-400">
+                <RxCheckCircled className="text-emerald-500 mr-2 h-4.5 w-4.5" /> Automatic client-side encryption
+              </div>
+              <div className="flex items-center text-[11px] text-zinc-400">
+                <RxCheckCircled className="text-emerald-500 mr-2 h-4.5 w-4.5" /> Zero dependencies needed
+              </div>
             </div>
           </div>
 
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800">
-              <div className="flex flex-col space-y-4">
-                <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                  Features
-                </a>
-                <a href="#pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                  Pricing
-                </a>
-                <a href="#testimonials" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                  Testimonials
-                </a>
-                <Link to="/login" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                  Sign In
-                </Link>
-                <Link
-                  to="/signup"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-center"
-                >
-                  Get Started
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-blue-900/20">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-          <div className="text-center">
-            <div>
-              <div>
-                <div className="flex justify-center mb-8">
-                  <div className="flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium">
-                    <Star className="h-4 w-4" />
-                    <span>Trusted by 10,000+ developers</span>
-                  </div>
+          <div className="md:col-span-7">
+            <div className="bg-[#09090b] rounded-xl border border-[#27272a] shadow-lg overflow-hidden">
+              <div className="bg-[#18181b] px-4 py-2 flex items-center justify-between border-b border-[#27272a]">
+                <div className="flex items-center space-x-1.5">
+                  <div className="w-2.5 h-2.5 bg-zinc-800 rounded-full border border-zinc-700"></div>
+                  <div className="w-2.5 h-2.5 bg-zinc-800 rounded-full border border-zinc-700"></div>
+                  <div className="w-2.5 h-2.5 bg-zinc-800 rounded-full border border-zinc-700"></div>
+                  <span className="text-[10px] font-mono text-zinc-500 ml-2">zsh</span>
                 </div>
-
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                  Secure and Sync Development Environment
-                  <br />
-                  <span className="text-blue-600">Variables in the Cloud</span>
-                </h1>
-
-                <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-                  Store, manage, and deploy your environment variables with military-grade encryption.
-                  Collaborate securely with your team and integrate seamlessly with your workflow.
-                </p>
-                <div className="mb-16">
-                  <Lottie animationData={landingImg} loop autoplay />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link
-                to="/signup"
-                className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              >
-                Start For Free
-              </Link>
-              <Link target='_blank' to={"https://github.com/MandemGibson/lit"} className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
-                <Github className="h-5 w-5 mr-2" />
-                View on GitHub
-              </Link>
-            </div>
-
-            {/* Demo Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Environment Variables
-                </h3>
                 <button
-                  onClick={() => setShowEncrypted(!showEncrypted)}
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors ${showEncrypted
-                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
-                    : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-                    }`}
+                  onClick={handleCopyInstall}
+                  className="p-1 rounded text-zinc-500 hover:text-white hover:bg-zinc-900 transition-colors"
+                  title="Copy command"
                 >
-                  {showEncrypted ? (
-                    <>
-                      <EyeOff className="h-3 w-3 mr-1" />
-                      Encrypted View
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="h-3 w-3 mr-1" />
-                      Plain View
-                    </>
-                  )}
+                  {copiedInstall ? <RxCheck className="h-3.5 w-3.5 text-emerald-500" /> : <RxCopy className="h-3.5 w-3.5" />}
                 </button>
               </div>
-
-              <div className="space-y-4 text-left">
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Shield className="h-4 w-4 text-green-500" />
-                    <span className="font-mono text-sm text-gray-900 dark:text-white">DATABASE_URL</span>
-                  </div>
-                  <code className="text-sm text-gray-600 dark:text-gray-300 font-mono">
-                    {showEncrypted ? 'a94f8fe3e8422ef2c7b6d5a9f1b2c3d4...' : 'postgresql://user:pass@localhost:5432/mydb'}
-                  </code>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Shield className="h-4 w-4 text-green-500" />
-                    <span className="font-mono text-sm text-gray-900 dark:text-white">API_SECRET_KEY</span>
-                  </div>
-                  <code className="text-sm text-gray-600 dark:text-gray-300 font-mono">
-                    {showEncrypted ? 'b5c8f2e9a1d4e7b0c3f6a9d2e5f8b1c4...' : 'sk_live_abcd1234efgh5678ijkl9012mnop3456'}
-                  </code>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Shield className="h-4 w-4 text-green-500" />
-                    <span className="font-mono text-sm text-gray-900 dark:text-white">JWT_SECRET</span>
-                  </div>
-                  <code className="text-sm text-gray-600 dark:text-gray-300 font-mono">
-                    {showEncrypted ? 'c6d9f3e0b2e5f8c1d4f7b0e3f6c9d2f5...' : 'super-secret-jwt-key-for-token-signing'}
-                  </code>
-                </div>
+              <div className="p-5 font-mono text-xs leading-relaxed text-zinc-300 space-y-1 overflow-x-auto select-all">
+                <div><span className="text-blue-500">$</span> curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh</div>
+                <div className="text-zinc-500">✓ Lit CLI installed successfully to ~/.lit/bin/lit</div>
+                <div><span className="text-blue-500">$</span> lit login</div>
+                <div className="text-zinc-500">✓ Authenticated successfully as developer</div>
+                <div><span className="text-blue-500">$</span> lit select</div>
+                <div className="text-zinc-500">✓ Project selected: Alpha-Vault</div>
+                <div><span className="text-blue-500">$</span> lit pull</div>
+                <div className="text-emerald-500">✓ Environment variables written to .env</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 bg-gray-50 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Everything you need to secure your secrets
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Built by developers, for developers. Lit Envs provides enterprise-grade security
-              with the simplicity your team needs.
-            </p>
+      {/* Features Grid */}
+      <section id="features" className="max-w-6xl mx-auto px-6 py-20 space-y-12">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-white">Built for security, refined for simplicity</h2>
+          <p className="text-xs text-zinc-500 max-w-md mx-auto">No complex configurations. Standard developer flow focusing on secret safety.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {features.map((feature, idx) => {
+            const Icon = feature.icon;
+            return (
+              <div key={idx} className="bg-[#18181b]/30 border border-[#27272a] rounded-xl p-6 space-y-3">
+                <div className="p-2 bg-[#18181b] border border-[#27272a] rounded-lg w-fit text-zinc-300">
+                  <Icon className="h-4.5 w-4.5" />
+                </div>
+                <h3 className="text-sm font-bold text-white">{feature.title}</h3>
+                <p className="text-xs text-zinc-450 leading-relaxed">{feature.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Pricing Grid */}
+      <section id="pricing" className="max-w-6xl mx-auto px-6 py-20 space-y-12 border-t border-[#27272a]">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-white">Simple Pricing</h2>
+          <p className="text-xs text-zinc-500">Always free for individual developers.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {pricingPlans.map((plan, idx) => {
+            return (
+              <div
+                key={idx}
+                className={`border rounded-xl p-6 flex flex-col justify-between ${
+                  plan.popular
+                    ? 'bg-[#18181b]/50 border-blue-500/50'
+                    : 'bg-[#18181b]/20 border-[#27272a]'
+                }`}
+              >
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-xs font-bold text-white uppercase tracking-wider">{plan.name}</span>
+                    {plan.popular && (
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-950 text-blue-400 border border-blue-900/50">
+                        Popular
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-baseline mb-2">
+                    <span className="text-3xl font-extrabold text-white">{plan.price}</span>
+                    {plan.period && <span className="text-xs text-zinc-550 ml-1">{plan.period}</span>}
+                  </div>
+                  <p className="text-[11px] text-zinc-500 mb-6">{plan.description}</p>
+                  
+                  <ul className="space-y-2.5 mb-8">
+                    {plan.features.map((f, i) => (
+                      <li key={i} className="flex items-center text-xs text-zinc-400">
+                        <RxCheckCircled className="text-zinc-500 mr-2 h-4 w-4 flex-shrink-0" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <Link
+                  to="/signup"
+                  className={`w-full py-1.5 text-xs font-bold rounded-full text-center transition-colors block ${
+                    plan.popular
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow shadow-blue-500/10'
+                      : 'bg-[#18181b] hover:bg-zinc-900 border border-[#27272a] text-zinc-300'
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-[#18181b]/20 border-t border-[#27272a] py-20">
+        <div className="max-w-6xl mx-auto px-6 space-y-12">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Developer feedback</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((test, idx) => {
               return (
-                <div
-                  key={index}
-                  className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700"
-                >
-                  <div className="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-6">
-                    <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <div key={idx} className="bg-[#18181b]/30 border border-[#27272a] rounded-xl p-6 flex flex-col justify-between">
+                  <p className="text-xs italic text-zinc-300 leading-relaxed">"{test.content}"</p>
+                  <div className="mt-5 border-t border-[#27272a] pt-3 flex items-center justify-between">
+                    <span className="text-xs font-semibold text-white">{test.name}</span>
+                    <span className="text-[10px] text-zinc-500">{test.role}</span>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    {feature.description}
-                  </p>
                 </div>
               );
             })}
@@ -370,205 +371,23 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* CLI Demo Section */}
-      <section className="py-24 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-                Seamless CLI Integration
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                Deploy with confidence using our powerful CLI tool. Sync your environment
-                variables across all environments with a single command.
-              </p>
-
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700 dark:text-gray-300">One-command deployment</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700 dark:text-gray-300">Automatic encryption</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700 dark:text-gray-300">Multi-environment support</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700 dark:text-gray-300">Real-time synchronization</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800 relative">
-              <div className="flex items-center justify-between mb-4 border-b border-gray-800/60 pb-3">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-400 text-xs ml-2 font-mono">zsh</span>
-                </div>
-                <button
-                  onClick={handleCopyInstall}
-                  className="p-1 rounded text-gray-400 hover:text-white hover:bg-gray-800 transition-all"
-                  title="Copy install command"
-                >
-                  {copiedInstall ? (
-                    <span className="text-emerald-400 text-xs font-sans font-semibold flex items-center">
-                      <CheckCircle className="h-3.5 w-3.5 mr-1" /> Copied
-                    </span>
-                  ) : (
-                    <Copy className="h-3.5 w-3.5" />
-                  )}
-                </button>
-              </div>
-
-              <div className="font-mono text-sm space-y-2">
-                <div className="text-green-400">$ curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh</div>
-                <div className="text-gray-400">✓ Lit CLI installed successfully</div>
-                <div className="text-green-400">$ lit login</div>
-                <div className="text-gray-400">✓ Authenticated successfully</div>
-                <div className="text-green-400">$ lit select</div>
-                <div className="text-gray-400">✓ Project 'Lit' selected</div>
-                <div className="text-green-400">$ lit push -f .env</div>
-                <div className="text-gray-400">🔒 Encrypting variables...</div>
-                <div className="text-gray-400">📤 Uploading to project...</div>
-                <div className="text-blue-400">✓ Environment variables synced successfully</div>
-                <div className="text-gray-400">🚀 Ready to deploy!</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-24 bg-gray-50 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Trusted by developers worldwide
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              See what teams are saying about Lit Envs
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700"
-              >
-                <div className="flex items-center mb-6">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full mr-4"
-                  />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {testimonial.role}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  "{testimonial.content}"
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
-            Ready to secure your environment variables?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-            Join thousands of developers who trust LitEnvs with their most sensitive data.
-            Start your free trial today.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/signup"
-              className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
-            >
-              Start For Free
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-            <Link target='_blank' to={"https://github.com/MandemGibson/lit"} className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
-              <Github className="h-5 w-5 mr-2" />
-              Contribute
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <Shield className="h-8 w-8 text-blue-400" />
-                <span className="text-xl font-bold">Lit Envs</span>
-              </div>
-              <p className="text-gray-400 mb-6 max-w-md">
-                The most secure way to manage environment variables in the cloud.
-                Built by developers, for developers.
-              </p>
-              <div className="flex space-x-4">
-                <button className="text-gray-400 hover:text-white transition-colors">
-                  <Github className="h-6 w-6" />
-                </button>
-                <button className="text-gray-400 hover:text-white transition-colors">
-                  <Twitter className="h-6 w-6" />
-                </button>
-              </div>
+      <footer className="border-t border-[#27272a] bg-[#09090b] py-12">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          <div className="flex items-center space-x-2.5">
+            <div className="bg-[#18181b] p-1 rounded border border-[#27272a]">
+              <RxLockClosed className="h-3.5 w-3.5 text-zinc-400" />
             </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">CLI Tool</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API Docs</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a target='_blank' href="https://github.com/MandemGibson/lit/blob/main/README.md" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-              </ul>
-            </div>
+            <span className="font-semibold text-zinc-350">Lit Envs</span>
+            <span>© 2026 Lit Envs. All rights reserved.</span>
           </div>
 
-          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2024 Lit Envs. All rights reserved.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Security
-              </a>
-            </div>
+          <div className="flex space-x-6">
+            <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <a target="_blank" rel="noreferrer" href="https://github.com/MandemGibson/lit" className="hover:text-white transition-colors flex items-center">
+              <RxGithubLogo className="mr-1.5 h-3.5 w-3.5" /> GitHub
+            </a>
           </div>
         </div>
       </footer>
