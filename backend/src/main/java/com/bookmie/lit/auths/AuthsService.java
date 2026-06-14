@@ -64,7 +64,8 @@ public class AuthsService {
       // }
       // this.redisTemplate.opsForValue().set(pendingUserId, strNewPendingUser, 15,
       // TimeUnit.MINUTES);
-      UserModel newUser = new UserModel(data.email(), password, hashedOtp);
+      String defaultName = data.email().split("@")[0];
+      UserModel newUser = new UserModel(data.email(), password, hashedOtp, defaultName);
       this.userRepository.save(newUser);
 
       String html = EmailTemplateLoader.loadTemplate("verification_email.html");
@@ -113,6 +114,8 @@ public class AuthsService {
       userObj.put("email", user.getEmail());
       userObj.put("lastLogedIn", user.getLastLogedIn() != null ? user.getLastLogedIn().toString() : null);
       userObj.put("joinedOn", user.getJoinedOn() != null ? user.getJoinedOn().toString() : null);
+      userObj.put("name", user.getName() != null ? user.getName() : user.getEmail().split("@")[0]);
+      userObj.put("avatar", user.getAvatar() != null ? user.getAvatar() : "");
       return new AuthResponseDto(200, "login successful", userObj);
     }
     return new AuthResponseDto(401, "login failed", null);

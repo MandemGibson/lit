@@ -66,7 +66,7 @@ const LandingPage: React.FC = () => {
       name: 'Sarah Chen',
       role: 'Lead Developer at TechCorp',
       avatar: 'https://ui-avatars.com/api/?name=Sarah+Chen&background=3B82F6&color=fff',
-      content: 'SecureEnv transformed how we manage secrets across our microservices. The CLI integration is seamless.'
+      content: 'Lit Envs transformed how we manage secrets across our microservices. The CLI integration is seamless.'
     },
     {
       name: 'Marcus Rodriguez',
@@ -334,7 +334,7 @@ const LandingPage: React.FC = () => {
               Everything you need to secure your secrets
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Built by developers, for developers. SecureEnv provides enterprise-grade security
+              Built by developers, for developers. Lit Envs provides enterprise-grade security
               with the simplicity your team needs.
             </p>
           </div>
@@ -405,14 +405,16 @@ const LandingPage: React.FC = () => {
               </div>
 
               <div className="font-mono text-sm space-y-2">
-                <div className="text-green-400">$ npm install -g @secureenv/cli</div>
-                <div className="text-gray-400">✓ SecureEnv CLI installed successfully</div>
-                <div className="text-green-400">$ secureenv login</div>
+                <div className="text-green-400">$ curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh</div>
+                <div className="text-gray-400">✓ Lit CLI installed successfully</div>
+                <div className="text-green-400">$ lit login</div>
                 <div className="text-gray-400">✓ Authenticated successfully</div>
-                <div className="text-green-400">$ secureenv push production</div>
+                <div className="text-green-400">$ lit select</div>
+                <div className="text-gray-400">✓ Project 'Lit' selected</div>
+                <div className="text-green-400">$ lit push -f .env</div>
                 <div className="text-gray-400">🔒 Encrypting variables...</div>
-                <div className="text-gray-400">📤 Uploading to production...</div>
-                <div className="text-blue-400">✓ 24 variables synced successfully</div>
+                <div className="text-gray-400">📤 Uploading to project...</div>
+                <div className="text-blue-400">✓ Environment variables synced successfully</div>
                 <div className="text-gray-400">🚀 Ready to deploy!</div>
               </div>
             </div>
@@ -428,7 +430,7 @@ const LandingPage: React.FC = () => {
               Trusted by developers worldwide
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              See what teams are saying about SecureEnv
+              See what teams are saying about Lit Envs
             </p>
           </div>
 
@@ -532,7 +534,7 @@ const LandingPage: React.FC = () => {
 
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 SecureEnv. All rights reserved.
+              © 2024 Lit Envs. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">

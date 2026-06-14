@@ -30,6 +30,11 @@ public class UserModel {
   //@JsonIgnore
   private String password;
 
+  private String name;
+
+  @Nullable
+  private String avatar;
+
   @Field(name = "joined_on")
   @CreatedDate
   private Instant joinedOn;
@@ -41,10 +46,11 @@ public class UserModel {
   @Nullable
   private Instant lastLogedIn;
 
-  public UserModel(String email, String password, String otp) {
+  public UserModel(String email, String password, String otp, String name) {
     this.email = email;
     this.password = password;
     this.otp = otp;
+    this.name = name;
   }
 
   public String getId() {
@@ -94,8 +100,20 @@ public class UserModel {
   public Instant getLastLogedIn() {
     return lastLogedIn;
   }
-  //
-  // public void setLastLogedIn(Instant lastLogedIn) {
-  // this.lastLogedIn = lastLogedIn;
-  // }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getAvatar() {
+    return avatar;
+  }
+
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
+  }
 }

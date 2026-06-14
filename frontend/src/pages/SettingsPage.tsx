@@ -30,11 +30,17 @@ const SettingsPage: React.FC = () => {
 
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                <img
-                  className="h-16 w-16 rounded-full"
-                  src={user?.avatar}
-                  alt={user?.name}
-                />
+                {user?.avatar ? (
+                  <img
+                    className="h-16 w-16 rounded-full object-cover"
+                    src={user.avatar}
+                    alt={user.name}
+                  />
+                ) : (
+                  <div className="h-16 w-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+                    {user?.name ? user.name.substring(0, 2).toUpperCase() : (user?.email ? user.email.substring(0, 2).toUpperCase() : 'U')}
+                  </div>
+                )}
                 <button className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500">
                   Change photo
                 </button>
@@ -47,7 +53,7 @@ const SettingsPage: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    defaultValue={user?.name}
+                    defaultValue={user?.name || ''}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   />
                 </div>
@@ -143,10 +149,10 @@ const SettingsPage: React.FC = () => {
                 Install the CLI
               </h4>
               <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
-                First, install the SecureEnv CLI tool:
+                Run this command in your terminal to install the Lit CLI:
               </p>
-              <code className="mt-2 block p-2 bg-white dark:bg-gray-800 rounded border text-sm font-mono">
-                npm install -g @secureenv/cli
+              <code className="mt-2 block p-2 bg-white dark:bg-gray-800 rounded border text-sm font-mono select-all">
+                curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh
               </code>
             </div>
 

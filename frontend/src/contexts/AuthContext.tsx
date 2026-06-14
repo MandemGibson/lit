@@ -6,6 +6,8 @@ interface User {
   joinedOn: string;
   lastLogedIn: string;
   token: string;
+  name: string;
+  avatar?: string;
 }
 
 interface AuthContextType {
