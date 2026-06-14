@@ -15,7 +15,8 @@ import {
   Github,
   Twitter,
   Eye,
-  EyeOff
+  EyeOff,
+  Copy
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import landingImg from "../assets/Animation - 1750827748544.json"
@@ -25,8 +26,14 @@ import Lottie from 'lottie-react';
 const LandingPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showEncrypted, setShowEncrypted] = useState(false);
-  //const { isDark, toggleTheme } = useTheme();
-  const { user } = useAuth()
+  const [copiedInstall, setCopiedInstall] = useState(false);
+  const { user } = useAuth();
+
+  const handleCopyInstall = () => {
+    navigator.clipboard.writeText('curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh');
+    setCopiedInstall(true);
+    setTimeout(() => setCopiedInstall(false), 2000);
+  };
 
   const features = [
     {
@@ -396,12 +403,27 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-gray-900 dark:bg-gray-800 rounded-2xl p-6 shadow-2xl border border-gray-700">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-gray-400 text-sm ml-2">Terminal</span>
+            <div className="bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800 relative">
+              <div className="flex items-center justify-between mb-4 border-b border-gray-800/60 pb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-gray-400 text-xs ml-2 font-mono">zsh</span>
+                </div>
+                <button
+                  onClick={handleCopyInstall}
+                  className="p-1 rounded text-gray-400 hover:text-white hover:bg-gray-800 transition-all"
+                  title="Copy install command"
+                >
+                  {copiedInstall ? (
+                    <span className="text-emerald-400 text-xs font-sans font-semibold flex items-center">
+                      <CheckCircle className="h-3.5 w-3.5 mr-1" /> Copied
+                    </span>
+                  ) : (
+                    <Copy className="h-3.5 w-3.5" />
+                  )}
+                </button>
               </div>
 
               <div className="font-mono text-sm space-y-2">

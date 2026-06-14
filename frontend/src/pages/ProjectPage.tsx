@@ -17,7 +17,6 @@ import {
   Sliders,
   Loader2,
   Lock,
-  PlusCircle,
   Save,
   X,
   UserPlus
@@ -524,7 +523,7 @@ const ProjectPage: React.FC = () => {
                   )}
                 </div>
               ) : (
-                filteredVariables.map((variable, idx) => {
+                filteredVariables.map((variable) => {
                   const globalIdx = variables.findIndex((v) => v.key === variable.key);
                   const isEditing = editingIndex === globalIdx;
                   const isRevealed = revealedKeys[variable.key] || false;
