@@ -1,9 +1,20 @@
-import React from 'react';
-import { Download, Terminal, Zap, LogIn, Upload, ArrowDown, Layers, Copy, Check } from 'lucide-react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  RxDownload,
+  RxCode,
+  RxLightningBolt,
+  RxEnter,
+  RxLayers,
+  RxUpload,
+  RxArrowDown,
+  RxCopy,
+  RxCheck,
+  RxLockClosed
+} from 'react-icons/rx';
 
 const DocsPage: React.FC = () => {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
   const installCmd = 'curl -fsSL https://raw.githubusercontent.com/MandemGibson/lit/main/install.sh | sh';
 
   const handleCopy = () => {
@@ -13,174 +24,193 @@ const DocsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-16 px-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
-          Lit CLI Documentation
-        </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
-          The Lit CLI helps you securely manage and sync environment variables across teams. Here's how to install and use it.
-        </p>
+    <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans selection:bg-zinc-800 pb-20">
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2.5">
+            <div className="bg-[#18181b] p-1 rounded-md border border-[#27272a]">
+              <RxLockClosed className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
+              Lit Envs
+            </span>
+          </Link>
+          <Link
+            to="/dashboard"
+            className="px-3.5 py-1.5 bg-[#18181b] border border-[#27272a] text-zinc-300 hover:bg-zinc-900 text-xs font-semibold rounded-full transition-colors duration-150"
+          >
+            Go to Dashboard
+          </Link>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-6 pt-16">
+        <div className="border-b border-[#27272a] pb-8 mb-10">
+          <h1 className="text-2xl font-bold tracking-tight text-[#f4f4f5]">
+            Lit CLI Documentation
+          </h1>
+          <p className="mt-2 text-xs text-zinc-400 leading-relaxed max-w-2xl">
+            The Lit CLI helper is a secure developer binary designed to sync, encrypt, and pull environment configurations instantly inside local build environments.
+          </p>
+        </div>
 
         <div className="space-y-12">
-
           {/* Step 1: Install CLI */}
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-              <Download className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="p-2.5 bg-[#18181b] border border-[#27272a] text-zinc-400 rounded-lg flex-shrink-0">
+              <RxDownload className="w-5 h-5" />
             </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">1. Install the CLI</h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-3">
-                Run the following command in your terminal to automatically download and configure the Lit CLI on macOS or Linux:
+            <div className="flex-1 min-w-0">
+              <h2 className="text-sm font-bold text-[#f4f4f5] mb-1.5">1. Install the CLI</h2>
+              <p className="text-xs text-zinc-400 mb-3 leading-relaxed">
+                Run the following command in your terminal to automatically download, install, and path the Lit binary on macOS or Linux:
               </p>
-              <div className="relative flex items-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm text-gray-900 dark:text-white">
-                <span className="select-all overflow-x-auto pr-12">{installCmd}</span>
+              <div className="relative flex items-center bg-[#18181b] border border-[#27272a] p-4 rounded-xl font-mono text-xs text-zinc-350">
+                <span className="select-all overflow-x-auto pr-12 font-mono">{installCmd}</span>
                 <button
                   onClick={handleCopy}
-                  className="absolute right-3 p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                  className="absolute right-3 p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                   title="Copy command"
                 >
-                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  {copied ? <RxCheck className="w-4 h-4 text-emerald-500" /> : <RxCopy className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+              <p className="text-[11px] text-zinc-500 mt-2">
                 Alternatively, you can manually download the binaries from the{' '}
-                <Link
-                  to="https://github.com/MandemGibson/lit/releases"
+                <a
+                  href="https://github.com/MandemGibson/lit/releases"
                   target="_blank"
-                  className="text-blue-600 hover:underline"
+                  rel="noreferrer"
+                  className="text-blue-500 hover:underline"
                 >
                   GitHub Releases
-                </Link>{' '}
-                page.
+                </a>{' '}
+                repository.
               </p>
             </div>
           </div>
 
           {/* Step 2: Path & Permissions */}
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-              <Terminal className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="p-2.5 bg-[#18181b] border border-[#27272a] text-zinc-400 rounded-lg flex-shrink-0">
+              <RxCode className="w-5 h-5" />
             </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">2. Make the Binary Executable (Manual Install Only)</h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                If you manually downloaded the binary, you must grant it execution permissions and run it from your local directory:
+            <div className="flex-1 min-w-0">
+              <h2 className="text-sm font-bold text-[#f4f4f5] mb-1.5">2. Make the Binary Executable (Manual Install Only)</h2>
+              <p className="text-xs text-zinc-400 mb-3 leading-relaxed">
+                If you manually downloaded the binary, you must grant execution permissions before launching it:
               </p>
-              <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm font-mono text-gray-900 dark:text-white mt-2">
+              <pre className="bg-[#18181b] border border-[#27272a] p-4 rounded-xl text-xs font-mono text-zinc-300">
                 chmod +x ./lit
               </pre>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
-                You can then execute it like this:
+              <p className="text-xs text-zinc-400 mt-3 mb-2 leading-relaxed">
+                Run the local command to view option flags:
               </p>
-              <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm font-mono text-gray-900 dark:text-white mt-2">
-                ./lit [command]
+              <pre className="bg-[#18181b] border border-[#27272a] p-4 rounded-xl text-xs font-mono text-zinc-300">
+                ./lit --help
               </pre>
             </div>
           </div>
 
           {/* Step 3: Init */}
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-              <Zap className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="p-2.5 bg-[#18181b] border border-[#27272a] text-zinc-400 rounded-lg flex-shrink-0">
+              <RxLightningBolt className="w-5 h-5" />
             </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">3. Initialize Your Project</h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Now that the CLI is ready, run the initialization command:
+            <div className="flex-1 min-w-0">
+              <h2 className="text-sm font-bold text-[#f4f4f5] mb-1.5">3. Initialize Your Project</h2>
+              <p className="text-xs text-zinc-400 mb-3 leading-relaxed">
+                Link your current development workspace with Lit Envs by running:
               </p>
-              <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mt-2 text-sm font-mono text-gray-900 dark:text-white">
-                ./lit init
+              <pre className="bg-[#18181b] border border-[#27272a] p-4 rounded-xl text-xs font-mono text-zinc-300">
+                lit init
               </pre>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
-                This command sets up the `.lit/` configuration folder and generates a `.gitignore` file
-                containing common secure patterns like:
+              <p className="text-xs text-zinc-400 mt-3 mb-2 leading-relaxed">
+                This creates a configuration directory and appends default ignored patterns to your <code className="p-0.5 bg-[#18181b] rounded text-zinc-300 font-mono">.gitignore</code> file:
               </p>
-              <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mt-2 text-sm font-mono text-gray-900 dark:text-white">
+              <pre className="bg-[#18181b] border border-[#27272a] p-4 rounded-xl text-xs font-mono text-zinc-300 leading-relaxed">
                 .env{'\n'}.lit/{'\n'}*.secret
               </pre>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
-                You’ll also be prompted to enter the project name, environment (dev/prod), and encryption settings.
-              </p>
             </div>
           </div>
 
           {/* CLI Commands Section */}
-          <div className="mt-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Available Commands</h2>
-            <div className="space-y-10">
-
+          <div className="pt-10 border-t border-[#27272a]">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-450 mb-8">Available Commands</h2>
+            <div className="space-y-8">
               {/* login */}
               <div className="flex gap-4 items-start">
-                <LogIn className="text-green-500 mt-1" />
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">login</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Authenticate your CLI session with the Lit backend. This stores your session token locally so
-                    you can securely run push/pull operations. Login may use a username/password, token, or OAuth.
+                <div className="mt-1 flex-shrink-0 text-emerald-500">
+                  <RxEnter className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xs font-bold font-mono text-[#f4f4f5]">lit login</h3>
+                  <p className="text-xs text-zinc-400 mt-1 mb-2 leading-relaxed">
+                    Authenticate your local terminal session with the Lit backend to generate and persist auth tokens locally.
                   </p>
-                  <pre className="mt-2 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg font-mono text-sm text-gray-900 dark:text-white">
-                    ./lit login
+                  <pre className="bg-[#18181b] border border-[#27272a] p-3 rounded-xl font-mono text-xs text-zinc-300 w-full sm:w-fit">
+                    lit login
                   </pre>
                 </div>
               </div>
 
-              {/* choose-project */}
+              {/* select */}
               <div className="flex gap-4 items-start">
-                <Layers className="text-yellow-500 mt-1" />
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">choose-project</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Switch between different projects associated with your account. This updates the `.lit` folder
-                    to use a different project's configuration.
+                <div className="mt-1 flex-shrink-0 text-amber-500">
+                  <RxLayers className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xs font-bold font-mono text-[#f4f4f5]">lit select</h3>
+                  <p className="text-xs text-zinc-400 mt-1 mb-2 leading-relaxed">
+                    Interactively select or switch your active working project context.
                   </p>
-                  <pre className="mt-2 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg font-mono text-sm text-gray-900 dark:text-white">
-                    ./lit select
+                  <pre className="bg-[#18181b] border border-[#27272a] p-3 rounded-xl font-mono text-xs text-zinc-300 w-full sm:w-fit">
+                    lit select
                   </pre>
                 </div>
               </div>
 
               {/* push */}
               <div className="flex gap-4 items-start">
-                <Upload className="text-purple-500 mt-1" />
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">push</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Encrypts your local `.env` and securely pushes it to the Lit server. This allows other team members
-                    to retrieve consistent and safe environment configurations.
+                <div className="mt-1 flex-shrink-0 text-indigo-400">
+                  <RxUpload className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xs font-bold font-mono text-[#f4f4f5]">lit push</h3>
+                  <p className="text-xs text-zinc-400 mt-1 mb-2 leading-relaxed">
+                    Pushes the local configurations to the cloud server, updating environment configurations securely.
                   </p>
-                  <pre className="mt-2 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg font-mono text-sm text-gray-900 dark:text-white">
-                    ./lit push
+                  <pre className="bg-[#18181b] border border-[#27272a] p-3 rounded-xl font-mono text-xs text-zinc-300 w-full sm:w-fit">
+                    lit push
                   </pre>
                 </div>
               </div>
 
               {/* pull */}
               <div className="flex gap-4 items-start">
-                <ArrowDown className="text-blue-500 mt-1" />
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">pull</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Retrieves the latest `.env` from the Lit cloud for the current project. Use this to stay in sync
-                    with your team or to configure a new development machine.
+                <div className="mt-1 flex-shrink-0 text-blue-500">
+                  <RxArrowDown className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xs font-bold font-mono text-[#f4f4f5]">lit pull</h3>
+                  <p className="text-xs text-zinc-400 mt-1 mb-2 leading-relaxed">
+                    Pulls latest environment variables from remote server for local runtime access.
                   </p>
-                  <pre className="mt-2 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg font-mono text-sm text-gray-900 dark:text-white">
-                    ./lit pull
+                  <pre className="bg-[#18181b] border border-[#27272a] p-3 rounded-xl font-mono text-xs text-zinc-300 w-full sm:w-fit">
+                    lit pull
                   </pre>
                 </div>
               </div>
-
             </div>
           </div>
-
         </div>
 
         {/* Go to Dashboard */}
-        <div className="mt-20 text-center">
+        <div className="mt-16 text-center pt-8 border-t border-[#27272a]">
           <Link
             to="/dashboard"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-[#f4f4f5] px-5 py-2 text-xs font-semibold rounded-full transition-colors duration-150"
           >
             Go to Dashboard
           </Link>
