@@ -4,6 +4,7 @@ import { RxEyeOpen, RxEyeNone, RxReload, RxEnvelopeClosed, RxLockClosed } from '
 import { useAuth } from '../contexts/AuthContext';
 import axiosInstance from 'axios';
 import { BACKEND_URL } from '../configs/constants';
+import litAuthIllustration from '../assets/lit_auth_illustration.png';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -31,26 +32,31 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#09090b] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <Link to="/" className="inline-flex items-center space-x-2.5 group">
-            <div className="bg-[#18181b] p-1.5 rounded-lg border border-[#27272a]">
-              <RxLockClosed className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
-              Lit Envs
-            </span>
-          </Link>
-          <h2 className="mt-6 text-2xl font-bold tracking-tight text-[#f4f4f5]">
-            Sign in to your account
-          </h2>
-        </div>
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#09090b] text-[#f4f4f5] transition-colors duration-200">
+      
+      {/* Left Column: Form Parent (Centers the form) */}
+      <div className="flex items-center justify-center p-8 sm:p-12 lg:p-16">
+        <div className="w-full max-w-sm space-y-8">
+          <div>
+            <Link to="/" className="inline-flex items-center space-x-2.5 group">
+              <div className="bg-[#18181b] p-1.5 rounded-lg border border-[#27272a]">
+                <RxLockClosed className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
+                Lit Envs
+              </span>
+            </Link>
+            <h2 className="mt-8 text-3xl font-bold tracking-tight text-[#f4f4f5] leading-tight">
+              Holla, <br /> Welcome Back
+            </h2>
+            <p className="mt-2 text-xs text-zinc-400">
+              Hey, welcome back to your special place
+            </p>
+          </div>
 
-        <div className="bg-[#18181b] border border-[#27272a] rounded-2xl shadow-lg p-8 space-y-6">
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-950/20 border border-red-900 text-red-400 px-4 py-2.5 rounded-lg text-xs font-semibold">
+              <div className="bg-red-955/20 border border-red-900 text-red-400 px-4 py-2.5 rounded-lg text-xs font-semibold">
                 {error}
               </div>
             )}
@@ -83,7 +89,7 @@ const LoginPage: React.FC = () => {
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-[10px] font-bold text-blue-500 hover:underline"
+                    className="text-[10px] font-bold text-blue-500 hover:underline font-sans"
                   >
                     Forgot password?
                   </Link>
@@ -127,7 +133,7 @@ const LoginPage: React.FC = () => {
             </div>
           </form>
 
-          <div className="text-center pt-4 border-t border-[#27272a]">
+          <div className="pt-4 border-t border-[#27272a]">
             <span className="text-xs text-zinc-400">
               Don't have an account?{' '}
               <Link
@@ -140,6 +146,16 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Right Column: Full Height Illustration */}
+      <div className="hidden lg:block h-screen overflow-hidden">
+        <img
+          src={litAuthIllustration}
+          alt="Lit Envs concept"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
     </div>
   );
 };

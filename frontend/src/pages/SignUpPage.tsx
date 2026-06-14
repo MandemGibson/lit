@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { RxEyeOpen, RxEyeNone, RxReload, RxEnvelopeClosed, RxLockClosed } from 'react-icons/rx';
 import axios from 'axios';
 import { BACKEND_URL } from '../configs/constants';
+import litAuthIllustration from '../assets/lit_auth_illustration.png';
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -47,23 +48,28 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#09090b] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <Link to="/" className="inline-flex items-center space-x-2.5 group">
-            <div className="bg-[#18181b] p-1.5 rounded-lg border border-[#27272a]">
-              <RxLockClosed className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
-              Lit Envs
-            </span>
-          </Link>
-          <h2 className="mt-6 text-2xl font-bold tracking-tight text-[#f4f4f5]">
-            Create your account
-          </h2>
-        </div>
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#09090b] text-[#f4f4f5] transition-colors duration-200">
+      
+      {/* Left Column: Form Parent (Centers the form) */}
+      <div className="flex items-center justify-center p-8 sm:p-12 lg:p-16">
+        <div className="w-full max-w-sm space-y-8">
+          <div>
+            <Link to="/" className="inline-flex items-center space-x-2.5 group">
+              <div className="bg-[#18181b] p-1.5 rounded-lg border border-[#27272a]">
+                <RxLockClosed className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
+                Lit Envs
+              </span>
+            </Link>
+            <h2 className="mt-8 text-3xl font-bold tracking-tight text-[#f4f4f5] leading-tight">
+              Get Started <br /> With Lit Envs
+            </h2>
+            <p className="mt-2 text-xs text-zinc-400">
+              Manage your project environments with ultimate speed and safety.
+            </p>
+          </div>
 
-        <div className="bg-[#18181b] border border-[#27272a] rounded-2xl shadow-lg p-8 space-y-6">
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-955/20 border border-red-900 text-red-400 px-4 py-2.5 rounded-lg text-xs font-semibold">
@@ -117,7 +123,7 @@ const SignUpPage: React.FC = () => {
                     {showPassword ? <RxEyeNone className="h-4 w-4" /> : <RxEyeOpen className="h-4 w-4" />}
                   </button>
                 </div>
-                <p className="mt-1 text-[9px] text-zinc-500">
+                <p className="mt-1 text-[9px] text-zinc-550">
                   Password must be at least 8 characters.
                 </p>
               </div>
@@ -158,7 +164,7 @@ const SignUpPage: React.FC = () => {
             </div>
           </form>
 
-          <div className="text-center pt-4 border-t border-[#27272a]">
+          <div className="pt-4 border-t border-[#27272a]">
             <span className="text-xs text-zinc-400">
               Already have an account?{' '}
               <Link
@@ -171,6 +177,16 @@ const SignUpPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Right Column: Full Height Illustration */}
+      <div className="hidden lg:block h-screen overflow-hidden">
+        <img
+          src={litAuthIllustration}
+          alt="Lit Envs concept"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
     </div>
   );
 };
