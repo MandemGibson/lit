@@ -1,6 +1,8 @@
 package com.bookmie.lit.projects;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,7 +42,10 @@ public class ProjectService {
     ProjectModel project = new ProjectModel(data.projectName(), data.description(), userId);
     project.addCollaborator(userId);
     this.projectRepo.save(project);
-    return new ResponseDto(201, "Project Added", null);
+    Map<String, String> result = new HashMap<>();
+    result.put("id", project.getId());
+    result.put("projectName", project.getProjectName());
+    return new ResponseDto(201, "Project Added", result);
   }
 
   public ResponseDto deleteProject(String projectId, String userId) {
