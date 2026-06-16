@@ -56,7 +56,7 @@ const LoginPage: React.FC = () => {
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-955/20 border border-red-900 text-red-400 px-4 py-2.5 rounded-lg text-xs font-semibold">
+              <div className="bg-red-950/20 border border-red-900 text-red-400 px-4 py-2.5 rounded-lg text-xs font-semibold">
                 {error}
               </div>
             )}

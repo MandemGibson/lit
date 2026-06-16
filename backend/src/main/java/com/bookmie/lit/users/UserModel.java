@@ -35,6 +35,15 @@ public class UserModel {
   @Nullable
   private String avatar;
 
+  @Field(name = "secret_updates_enabled")
+  private boolean secretUpdatesEnabled = true;
+
+  @Field(name = "collab_requests_enabled")
+  private boolean collabRequestsEnabled = true;
+
+  @Field(name = "cli_activity_enabled")
+  private boolean cliActivityEnabled = false;
+
   @Field(name = "joined_on")
   @CreatedDate
   private Instant joinedOn;

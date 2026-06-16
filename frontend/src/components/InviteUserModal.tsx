@@ -3,6 +3,7 @@ import { RxCross2, RxReload, RxEnvelopeClosed } from 'react-icons/rx';
 import axios from 'axios';
 import { BACKEND_URL } from '../configs/constants';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 
 interface InviteUserModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const { user } = useAuth();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
       });
 
       if (res.status === 200) {
-        alert("Invitation sent");
+        showToast("Invitation sent successfully!", "success");
         setEmail('');
         setIsLoading(false);
         onClose();
@@ -47,7 +49,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
     } catch (err: any) {
       const errMsg = err.response?.data?.message || 'Failed to send invitation';
       setErr(errMsg);
-      alert(errMsg);
+      showToast(errMsg, "error");
       setIsLoading(false);
     }
   };

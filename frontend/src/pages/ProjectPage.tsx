@@ -23,6 +23,7 @@ import InviteUserModal from '../components/InviteUserModal';
 import axios from 'axios';
 import { BACKEND_URL } from '../configs/constants';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 
 interface TeamMember {
   id: string;
@@ -38,6 +39,7 @@ const ProjectPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const project = location.state?.project;
 
   const [teamMembers, setTeamMembers] = useState<TeamMember[] | null>(null);
@@ -174,7 +176,7 @@ const ProjectPage: React.FC = () => {
     // Check if key already exists
     const keyUpper = newKey.trim().toUpperCase();
     if (variables.some((v) => v.key === keyUpper)) {
-      alert(`Variable "${keyUpper}" already exists.`);
+      showToast(`Variable "${keyUpper}" already exists.`, "error");
       return;
     }
 
@@ -207,7 +209,7 @@ const ProjectPage: React.FC = () => {
 
     // Check conflict with other keys
     if (variables.some((v, idx) => v.key === keyUpper && idx !== index)) {
-      alert(`Variable "${keyUpper}" already exists.`);
+      showToast(`Variable "${keyUpper}" already exists.`, "error");
       return;
     }
 
@@ -220,7 +222,7 @@ const ProjectPage: React.FC = () => {
   // Raw textarea save
   const handleRawSave = async () => {
     await saveEnvironment([], rawEnv);
-    alert('Environment variables updated successfully!');
+    showToast('Environment variables updated successfully!', 'success');
   };
 
   // Delete Project
@@ -313,7 +315,7 @@ const ProjectPage: React.FC = () => {
             <button
               onClick={() => deleteProject(project.id)}
               disabled={deletingProject}
-              className="inline-flex items-center px-3 py-1.5 border border-red-900/40 text-xs font-semibold rounded-full text-red-400 bg-red-955/10 hover:bg-red-950/20 transition-all shadow-sm disabled:opacity-50"
+              className="inline-flex items-center px-3 py-1.5 border border-red-900/40 text-xs font-semibold rounded-full text-red-400 bg-red-950/10 hover:bg-red-950/20 transition-all shadow-sm disabled:opacity-50"
             >
               {deletingProject ? (
                 <>
@@ -329,59 +331,81 @@ const ProjectPage: React.FC = () => {
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-5 shadow-sm">
-            <div className="flex items-center">
-              <div className="p-2.5 bg-[#09090b] border border-[#27272a] text-zinc-400 rounded-lg">
-                <RxLockClosed className="h-5 w-5" />
-              </div>
-              <div className="ml-4">
-                <p className="text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
-                  Total Secrets
-                </p>
-                <p className="text-xl font-bold text-white mt-0.5">
-                  {variables.length}
-                </p>
-              </div>
+          {/* Secrets Card */}
+          <div className="relative group overflow-hidden bg-gradient-to-b from-[#1c1c20] to-[#141417] border border-[#27272a] rounded-xl p-5 hover:border-zinc-700/80 transition-all duration-300 shadow-lg">
+            {/* Soft radial glow in corner */}
+            <div className="absolute -top-12 -right-12 w-24 h-24 bg-blue-500/5 rounded-full blur-xl pointer-events-none group-hover:bg-blue-500/10 transition-all duration-300"></div>
+            
+            <div>
+              <p className="text-[11px] font-medium tracking-wide text-zinc-400 uppercase">
+                Total Secrets
+              </p>
+              <p className="text-3xl font-extrabold text-white mt-2.5 tracking-tight">
+                {variables.length}
+              </p>
+            </div>
+            
+            <div className="mt-4 pt-3 border-t border-[#27272a]/40 flex items-center justify-between text-[10px] text-zinc-500">
+              <span>Stored in secure vault</span>
+              <span className="font-mono text-blue-500/80 bg-blue-500/5 px-1.5 py-0.5 rounded-md border border-blue-500/10">AES-256</span>
             </div>
           </div>
 
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-5 shadow-sm">
-            <div className="flex items-center">
-              <div className="p-2.5 bg-[#09090b] border border-[#27272a] text-zinc-400 rounded-lg">
-                <RxPerson className="h-5 w-5" />
-              </div>
-              <div className="ml-4">
-                <p className="text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
-                  Collaborators
-                </p>
-                <p className="text-xl font-bold text-white mt-0.5">
-                  {teamMembers ? teamMembers.length : '...'}
-                </p>
-              </div>
+          {/* Collaborators Card */}
+          <div className="relative group overflow-hidden bg-gradient-to-b from-[#1c1c20] to-[#141417] border border-[#27272a] rounded-xl p-5 hover:border-zinc-700/80 transition-all duration-300 shadow-lg">
+            {/* Soft radial glow in corner */}
+            <div className="absolute -top-12 -right-12 w-24 h-24 bg-purple-500/5 rounded-full blur-xl pointer-events-none group-hover:bg-purple-500/10 transition-all duration-300"></div>
+            
+            <div>
+              <p className="text-[11px] font-medium tracking-wide text-zinc-400 uppercase">
+                Collaborators
+              </p>
+              <p className="text-3xl font-extrabold text-white mt-2.5 tracking-tight">
+                {teamMembers ? teamMembers.length : '...'}
+              </p>
+            </div>
+            
+            <div className="mt-4 pt-3 border-t border-[#27272a]/40 flex items-center justify-between text-[10px] text-zinc-500">
+              <span>Active members in team</span>
+              <button 
+                onClick={() => setIsInviteModalOpen(true)}
+                className="text-purple-400 hover:text-purple-300 transition-colors font-medium hover:underline"
+              >
+                + Invite
+              </button>
             </div>
           </div>
 
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-5 shadow-sm">
-            <div className="flex items-center">
-              <div className="p-2.5 bg-[#09090b] border border-[#27272a] text-zinc-400 rounded-lg">
-                <RxCode className="h-5 w-5" />
-              </div>
-              <div className="ml-4">
-                <p className="text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
-                  CLI Sync Status
-                </p>
-                <div className="flex items-center text-xs font-semibold text-emerald-500 mt-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+          {/* Sync Card */}
+          <div className="relative group overflow-hidden bg-gradient-to-b from-[#1c1c20] to-[#141417] border border-[#27272a] rounded-xl p-5 hover:border-zinc-700/80 transition-all duration-300 shadow-lg">
+            {/* Soft radial glow in corner */}
+            <div className="absolute -top-12 -right-12 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl pointer-events-none group-hover:bg-emerald-500/10 transition-all duration-300"></div>
+            
+            <div>
+              <p className="text-[11px] font-medium tracking-wide text-zinc-400 uppercase">
+                CLI Sync Status
+              </p>
+              <div className="flex items-baseline space-x-2 mt-2">
+                <p className="text-3xl font-extrabold text-white tracking-tight">
                   Active
-                </div>
+                </p>
+                <span className="relative flex h-2 w-2 mb-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
               </div>
+            </div>
+            
+            <div className="mt-4 pt-3 border-t border-[#27272a]/40 flex items-center justify-between text-[10px] text-zinc-500">
+              <span>Real-time terminal sync</span>
+              <span className="font-mono text-emerald-500/80 bg-emerald-500/5 px-1.5 py-0.5 rounded-md border border-emerald-500/10">Connected</span>
             </div>
           </div>
         </div>
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="bg-red-955/20 border border-red-900 text-red-400 px-4 py-2.5 rounded-lg text-xs font-semibold animate-shake">
+          <div className="bg-red-950/20 border border-red-900 text-red-400 px-4 py-2.5 rounded-lg text-xs font-semibold animate-shake">
             {errorMsg}
           </div>
         )}
@@ -431,7 +455,7 @@ const ProjectPage: React.FC = () => {
                 </div>
                 <button
                   onClick={() => setIsAddingInline(true)}
-                  className="inline-flex items-center px-3.5 py-1.5 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-955 text-xs font-bold rounded-full shadow transition-colors"
+                  className="inline-flex items-center px-3.5 py-1.5 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full shadow transition-colors"
                 >
                   <RxPlus className="h-3.5 w-3.5 mr-1" /> Add Secret
                 </button>

@@ -9,7 +9,8 @@ import {
   RxMixerHorizontal,
   RxArrowRight,
   RxLockClosed,
-  RxReload
+  RxReload,
+  RxChevronDown
 } from 'react-icons/rx';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 import CreateProjectModal from '../components/CreateProjectModal';
@@ -34,11 +35,29 @@ const DashboardPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sortBy, setSortBy] = useState<'name' | 'newest' | 'oldest'>('name');
   const { user } = useAuth();
 
   const filteredProjects = projects.filter(project =>
     project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
+    if (sortBy === 'name') {
+      return a.projectName.localeCompare(b.projectName);
+    }
+    if (sortBy === 'newest') {
+      const dateA = a.createdOn ? new Date(a.createdOn).getTime() : 0;
+      const dateB = b.createdOn ? new Date(b.createdOn).getTime() : 0;
+      return dateB - dateA;
+    }
+    if (sortBy === 'oldest') {
+      const dateA = a.createdOn ? new Date(a.createdOn).getTime() : 0;
+      const dateB = b.createdOn ? new Date(b.createdOn).getTime() : 0;
+      return dateA - dateB;
+    }
+    return 0;
+  });
 
   const handleCreateProject = () => {
     fetchProjects();
@@ -96,10 +115,20 @@ const DashboardPage: React.FC = () => {
               className="block w-full pl-10 pr-3 py-1.5 border border-[#27272a] rounded-full bg-[#18181b] text-xs placeholder-zinc-550 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-          <button className="inline-flex items-center px-4 py-1.5 border border-[#27272a] text-xs font-semibold rounded-full text-zinc-350 bg-[#18181b] hover:bg-zinc-900 transition-colors shadow-sm">
-            <RxMixerHorizontal className="h-3.5 w-3.5 mr-2 text-zinc-500" />
-            Filter
-          </button>
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="appearance-none inline-flex items-center pl-4 pr-9 py-1.5 border border-[#27272a] text-xs font-semibold rounded-full text-zinc-300 bg-[#18181b] hover:bg-zinc-900 transition-colors shadow-sm focus:outline-none cursor-pointer"
+            >
+              <option value="name" className="bg-[#18181b] text-zinc-300">Sort: Name (A-Z)</option>
+              <option value="newest" className="bg-[#18181b] text-zinc-300">Sort: Newest First</option>
+              <option value="oldest" className="bg-[#18181b] text-zinc-300">Sort: Oldest First</option>
+            </select>
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-550">
+              <RxChevronDown className="h-3.5 w-3.5" />
+            </div>
+          </div>
         </div>
 
         {/* Projects Cards Listing */}
@@ -146,44 +175,63 @@ const DashboardPage: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredProjects.map((project) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {sortedProjects.map((project) => (
               <Link
                 key={project.id}
                 state={{ project }}
                 to={`/project/${project.id}`}
-                className="group block bg-[#18181b] rounded-xl border border-[#27272a] hover:border-zinc-700 transition-all duration-150"
+                className="group block relative overflow-hidden bg-gradient-to-b from-[#18181b] to-[#121214] rounded-xl border border-[#27272a] hover:border-zinc-700/80 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-black/20"
               >
-                <div className="p-6 flex flex-col h-full justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-2 bg-[#09090b] border border-[#27272a] text-zinc-300 rounded-lg group-hover:bg-[#27272a] transition-colors duration-150">
-                        <RxReader className="h-4.5 w-4.5" />
-                      </div>
-                      
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#27272a] text-zinc-300 border border-[#3f3f46]">
-                        <RxLockClosed className="h-2.5 w-2.5 mr-1" /> Encrypted
-                      </span>
-                    </div>
+                {/* Subtle top light sheen on hover */}
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                    <h3 className="text-sm font-bold text-white group-hover:text-blue-450 transition-colors">
+                <div className="p-5 flex flex-col h-full justify-between">
+                  <div>
+                    {/* <div className="flex items-center justify-between mb-3.5"> */}
+                      {/* Monogram Badge */}
+                      {/* <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#27272a] to-[#18181b] border border-[#3f3f46]/50 text-zinc-200 flex items-center justify-center text-[9px] font-extrabold tracking-wider shadow-sm group-hover:from-blue-600/10 group-hover:to-purple-600/10 group-hover:border-blue-500/30 transition-all duration-300">
+                        {project.projectName.substring(0, 2).toUpperCase()}
+                      </div> */}
+                      
+                      {/* Secure Badge */}
+                      {/* <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] font-bold bg-[#09090b]/40 text-zinc-400 border border-[#27272a]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                        Encrypted
+                      </span> */}
+                    {/* </div> */}
+
+                    <h3 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors duration-200">
                       {project.projectName}
                     </h3>
                     
-                    <p className="mt-1.5 text-[11px] text-zinc-500 line-clamp-2 leading-relaxed">
+                    <p className="mt-1 text-[10.5px] text-zinc-550 line-clamp-2 leading-relaxed">
                       {project.description || 'No description provided.'}
                     </p>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-zinc-850 flex items-center justify-between text-[10px] text-zinc-500">
-                    <div className="flex items-center">
-                      <RxPerson className="h-3.5 w-3.5 mr-1 text-zinc-655" />
-                      <span>{project.collaborators ? project.collaborators.length : 1} {project.collaborators && project.collaborators.length === 1 ? 'member' : 'members'}</span>
+                  <div className="mt-5 pt-3.5 border-t border-[#27272a]/50 flex items-center justify-between text-[9.5px] text-zinc-500">
+                    <div className="flex items-center space-x-2">
+                      {/* Avatar Stack */}
+                      <div className="flex -space-x-1 overflow-hidden">
+                        <div className="inline-block shrink-0 h-5 w-5 rounded-full bg-zinc-800 border border-[#121214] flex items-center justify-center text-[9px] font-bold text-zinc-400">
+                          {user?.email?.substring(0, 1).toUpperCase() || 'U'}
+                        </div>
+                        {project.collaborators && project.collaborators.length > 1 && (
+                          <div className="inline-block shrink-0 h-5 w-5 rounded-full bg-zinc-700 border border-[#121214] flex items-center justify-center text-[8px] font-bold text-zinc-300">
+                            +{project.collaborators.length - 1}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <span>
+                        {project.collaborators ? project.collaborators.length : 1} {(!project.collaborators || project.collaborators.length <= 1) ? 'member' : 'members'}
+                      </span>
                     </div>
 
-                    <div className="flex items-center text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center text-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-350 transform translate-x-1 group-hover:translate-x-0">
                       <span className="font-semibold mr-1">Open</span>
-                      <RxArrowRight className="h-3 w-3" />
+                      <RxArrowRight className="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   </div>
                 </div>
