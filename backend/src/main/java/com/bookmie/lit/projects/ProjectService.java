@@ -1,6 +1,9 @@
 package com.bookmie.lit.projects;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +37,9 @@ public class ProjectService {
 
   @Autowired
   private UserRepository usersRepo;
+
+  @Autowired
+  private ProjectHistoryRepo projectHistoryRepo;
 
   public ResponseDto createProject(CreateProjectDto data, String userId) {
     if (this.projectRepo.findByProjectName(data.projectName()).isPresent()) {
@@ -81,15 +87,115 @@ public class ProjectService {
   }
 
   public ResponseDto updateEnvData(String projectId, String envData, String userId) {
-    Optional<ProjectModel> project = this.projectRepo.findByIdAndOwner(projectId, userId);
+    Optional<ProjectModel> project = this.projectRepo.findById(projectId);
     if (project.isPresent()) {
       ProjectModel projectObj = project.get();
-      String securedData = this.operations.encryptEnvData(envData);
-      projectObj.setDotEnvData(securedData);
-      this.projectRepo.save(projectObj);
-      return new ResponseDto(200, "successfull", null);
+      if (projectObj.getOwner().equals(userId) || projectObj.getCollaborators().contains(userId)) {
+        String oldDecryptedEnv = "";
+        if (projectObj.getDotEnvData() != null && !projectObj.getDotEnvData().isEmpty()) {
+          try {
+            oldDecryptedEnv = this.operations.decryptEnvData(projectObj.getDotEnvData());
+          } catch (Exception e) {
+            System.err.println("Failed to decrypt old env data: " + e.getMessage());
+          }
+        }
+
+        Map<String, String> oldMap = parseEnv(oldDecryptedEnv);
+        Map<String, String> newMap = parseEnv(envData);
+
+        List<String> addedKeys = new ArrayList<>();
+        List<String> modifiedKeys = new ArrayList<>();
+        List<String> deletedKeys = new ArrayList<>();
+
+        for (String key : newMap.keySet()) {
+          if (!oldMap.containsKey(key)) {
+            addedKeys.add(key);
+          } else if (!newMap.get(key).equals(oldMap.get(key))) {
+            modifiedKeys.add(key);
+          }
+        }
+
+        for (String key : oldMap.keySet()) {
+          if (!newMap.containsKey(key)) {
+            deletedKeys.add(key);
+          }
+        }
+
+        String securedData = this.operations.encryptEnvData(envData);
+        projectObj.setDotEnvData(securedData);
+        projectObj.setLastUpdated(Instant.now());
+
+        String updaterName = "A collaborator";
+        String updaterEmail = "";
+        Optional<UserModel> updaterOpt = this.usersRepo.findById(userId);
+        if (updaterOpt.isPresent()) {
+          UserModel updater = updaterOpt.get();
+          updaterName = updater.getName() != null && !updater.getName().trim().isEmpty() ? updater.getName() : updater.getEmail();
+          updaterEmail = updater.getEmail();
+        }
+        projectObj.setUpdatedByUserId(userId);
+        projectObj.setUpdatedByUserName(updaterName);
+        this.projectRepo.save(projectObj);
+
+        ProjectHistoryModel history = new ProjectHistoryModel(
+            projectId,
+            userId,
+            updaterName,
+            updaterEmail,
+            addedKeys,
+            modifiedKeys,
+            deletedKeys
+        );
+        this.projectHistoryRepo.save(history);
+
+        Set<String> recipientIds = new HashSet<>(projectObj.getCollaborators());
+        if (!projectObj.getOwner().equals(userId)) {
+          recipientIds.add(projectObj.getOwner());
+        }
+        recipientIds.remove(userId);
+
+        if (!recipientIds.isEmpty()) {
+          List<UserModel> recipients = this.usersRepo.findAllByIdIn(recipientIds);
+          for (UserModel recipient : recipients) {
+            if (recipient.isSecretUpdatesEnabled()) {
+              try {
+                String html = EmailTemplateLoader.loadTemplate("secret_update.html");
+                String msg = html.replace("{{projectName}}", projectObj.getProjectName())
+                                 .replace("{{updaterName}}", updaterName);
+                this.emailService.sendHtmlEmail(recipient.getEmail(), "Lit Envs - Secret Update Alert", msg);
+              } catch (Exception e) {
+                System.err.println("Failed to send HTML update email to " + recipient.getEmail() + ": " + e.getMessage());
+              }
+            }
+          }
+        }
+
+        return new ResponseDto(200, "successfull", null);
+      }
+      return new ResponseDto(403, "Access denied", null);
     }
     return new ResponseDto(404, "not found", null);
+  }
+
+  private Map<String, String> parseEnv(String envData) {
+    Map<String, String> map = new HashMap<>();
+    if (envData == null || envData.isEmpty()) {
+      return map;
+    }
+    String[] lines = envData.split("\n");
+    for (String line : lines) {
+      line = line.trim();
+      if (line.isEmpty() || line.startsWith("#")) {
+        continue;
+      }
+      int eqIdx = line.indexOf('=');
+      if (eqIdx > 0) {
+        String key = line.substring(0, eqIdx).trim();
+        String value = line.substring(eqIdx + 1).trim();
+        map.put(key, value);
+      }
+    }
+    return map;
   }
 
   public ResponseDto sendInvitation(InviteUserDto request) throws Exception {
@@ -183,6 +289,19 @@ public class ProjectService {
 
     return new ResponseDto(200, "Collaborator deleted", collaborators);
 
+  }
+
+  public ResponseDto getProjectHistory(String projectId, String userId) {
+    Optional<ProjectModel> projectOtp = this.projectRepo.findById(projectId);
+    if (projectOtp.isEmpty()) {
+      return new ResponseDto(404, "Project not found", null);
+    }
+    ProjectModel project = projectOtp.get();
+    if (project.getOwner().equals(userId) || project.getCollaborators().contains(userId)) {
+      List<ProjectHistoryModel> history = this.projectHistoryRepo.findByProjectIdOrderByTimestampDesc(projectId);
+      return new ResponseDto(200, "History fetched successfully", history);
+    }
+    return new ResponseDto(403, "Access denied", null);
   }
 
 }

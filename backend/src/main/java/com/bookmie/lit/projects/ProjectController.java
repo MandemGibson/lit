@@ -70,6 +70,12 @@ public class ProjectController {
     return ResponseEntity.status(res.statusCode()).body(res);
   }
 
+  @GetMapping("/{projectId}/history")
+  public ResponseEntity<ResponseDto> getProjectHistory(Authentication auth, @PathVariable String projectId) {
+    ResponseDto res = this.projectService.getProjectHistory(projectId, this.currentUser.getId());
+    return ResponseEntity.status(res.statusCode()).body(res);
+  }
+
   @PostMapping("/invite")
   public ResponseEntity<ResponseDto> pullEnvData(@RequestBody InviteUserDto data) throws Exception {
     ResponseDto res = this.projectService.sendInvitation(data);

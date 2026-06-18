@@ -72,7 +72,7 @@ var createCmd = &cobra.Command{
 		s.Stop()
 
 		if err != nil {
-			fmt.Println("🚨 Network error:", err)
+			fmt.Println("🚨", formatNetworkError(err))
 			return
 		}
 		defer res.Body.Close()

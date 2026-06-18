@@ -42,6 +42,14 @@ public class ProjectModel {
   @Field(name = "last_updated")
   private Instant lastUpdated;
 
+  @Field(name = "updated_by_user_id")
+  @Nullable
+  private String updatedByUserId;
+
+  @Field(name = "updated_by_user_name")
+  @Nullable
+  private String updatedByUserName;
+
   @Field(name = "collaborators")
   private Set<String> collaborators = new HashSet<>();
 
@@ -89,6 +97,30 @@ public class ProjectModel {
 
   public void setOwner(String owner) {
     this.owner = owner;
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public void setLastUpdated(Instant lastUpdated) {
+    this.lastUpdated = lastUpdated;
+  }
+
+  public String getUpdatedByUserId() {
+    return updatedByUserId;
+  }
+
+  public void setUpdatedByUserId(String updatedByUserId) {
+    this.updatedByUserId = updatedByUserId;
+  }
+
+  public String getUpdatedByUserName() {
+    return updatedByUserName;
+  }
+
+  public void setUpdatedByUserName(String updatedByUserName) {
+    this.updatedByUserName = updatedByUserName;
   }
 
 }

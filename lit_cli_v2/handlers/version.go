@@ -7,7 +7,7 @@ import (
 )
 
 // Version represents the CLI release version, can be set via ldflags
-var Version = "v0.3.1"
+var Version = "v0.3.2"
 
 var versionCmd = &cobra.Command{
 	Use:   "version",

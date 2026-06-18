@@ -51,9 +51,8 @@ func pullEnv() {
 	client := http.Client{Timeout: 30 * time.Second}
 	res, err := client.Do(req)
 	if err != nil {
-		s.FinalMSG = "🚨 Network error.\n"
+		s.FinalMSG = fmt.Sprintf("🚨 %s\n", formatNetworkError(err))
 		s.Stop()
-		fmt.Println(err)
 		return
 	}
 	defer res.Body.Close()

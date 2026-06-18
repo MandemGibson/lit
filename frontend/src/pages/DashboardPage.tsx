@@ -3,13 +3,8 @@ import { Link } from 'react-router-dom';
 import {
   RxPlus,
   RxReader,
-  RxPerson,
-  RxCode,
   RxMagnifyingGlass,
-  RxMixerHorizontal,
   RxArrowRight,
-  RxLockClosed,
-  RxReload,
   RxChevronDown
 } from 'react-icons/rx';
 import DashboardLayout from '../components/Layout/DashboardLayout';
@@ -214,11 +209,11 @@ const DashboardPage: React.FC = () => {
                     <div className="flex items-center space-x-2">
                       {/* Avatar Stack */}
                       <div className="flex -space-x-1 overflow-hidden">
-                        <div className="inline-block shrink-0 h-5 w-5 rounded-full bg-zinc-800 border border-[#121214] flex items-center justify-center text-[9px] font-bold text-zinc-400">
+                        <div className="shrink-0 h-5 w-5 rounded-full bg-zinc-800 border border-[#121214] flex items-center justify-center text-[9px] font-bold text-zinc-400">
                           {user?.email?.substring(0, 1).toUpperCase() || 'U'}
                         </div>
                         {project.collaborators && project.collaborators.length > 1 && (
-                          <div className="inline-block shrink-0 h-5 w-5 rounded-full bg-zinc-700 border border-[#121214] flex items-center justify-center text-[8px] font-bold text-zinc-300">
+                          <div className="shrink-0 h-5 w-5 rounded-full bg-zinc-700 border border-[#121214] flex items-center justify-center text-[8px] font-bold text-zinc-300">
                             +{project.collaborators.length - 1}
                           </div>
                         )}
