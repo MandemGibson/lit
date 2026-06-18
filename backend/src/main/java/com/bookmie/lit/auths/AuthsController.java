@@ -11,6 +11,7 @@ import com.bookmie.lit.auths.dtos.AuthResponseDto;
 import com.bookmie.lit.auths.dtos.GetTokenDto;
 import com.bookmie.lit.auths.dtos.RegisterDto;
 import com.bookmie.lit.auths.dtos.VerifyUserDto;
+import com.bookmie.lit.auths.dtos.VerifyMfaDto;
 import com.bookmie.lit.utils.dtos.ResponseDto;
 
 @RestController
@@ -35,6 +36,12 @@ public class AuthsController {
   @PostMapping("/obtain-token")
   public ResponseEntity<AuthResponseDto> obtainToken(@RequestBody GetTokenDto requestData) {
     AuthResponseDto response = this.authsService.getToken(requestData.email(), requestData.password());
+    return ResponseEntity.status(response.statusCode()).body(response);
+  }
+
+  @PostMapping("/verify-mfa")
+  public ResponseEntity<AuthResponseDto> verifyMfa(@RequestBody VerifyMfaDto requestData) {
+    AuthResponseDto response = this.authsService.verifyMfa(requestData);
     return ResponseEntity.status(response.statusCode()).body(response);
   }
 }

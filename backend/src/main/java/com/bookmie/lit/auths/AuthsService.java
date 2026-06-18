@@ -1,5 +1,6 @@
 package com.bookmie.lit.auths;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bookmie.lit.auths.dtos.AuthResponseDto;
 import com.bookmie.lit.auths.dtos.PendingUserDto;
 import com.bookmie.lit.auths.dtos.RegisterDto;
+import com.bookmie.lit.auths.dtos.VerifyMfaDto;
 import com.bookmie.lit.utils.*;
 import com.bookmie.lit.auths.dtos.VerifyUserDto;
 import com.bookmie.lit.configs.security.JwtService;
@@ -108,7 +110,30 @@ public class AuthsService {
     UserModel user = this.userRepository.findByEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     if (this.passwordEncoder.matches(password, user.getPassword())) {
+      if (user.isMfaEnabled()) {
+        String mfaCode = Contrib.generateOtpCode().toString();
+        user.setMfaCode(this.passwordEncoder.encode(mfaCode));
+        user.setMfaCodeExpiresAt(Instant.now().plusSeconds(300)); // 5 mins expiration
+        this.userRepository.save(user);
+
+        try {
+          String html = EmailTemplateLoader.loadTemplate("verification_email.html");
+          String msg = html.replace("123456", mfaCode);
+          this.emailService.sendHtmlEmail(user.getEmail(), "Lit Envs 2FA Verification Code", msg);
+        } catch (Exception e) {
+          System.out.println("Error sending 2FA email: " + e.getMessage());
+        }
+
+        Map<String, String> mfaData = new HashMap<>();
+        mfaData.put("mfaRequired", "true");
+        mfaData.put("email", user.getEmail());
+        return new AuthResponseDto(200, "MFA code sent to email", mfaData);
+      }
+
       String token = this.jwtService.generateToken(user.getId(), user.getEmail());
+      user.setLastLogedIn(Instant.now());
+      this.userRepository.save(user);
+
       Map<String, String> userObj = new HashMap<>();
       userObj.put("token", token);
       userObj.put("email", user.getEmail());
@@ -119,6 +144,40 @@ public class AuthsService {
       return new AuthResponseDto(200, "login successful", userObj);
     }
     return new AuthResponseDto(401, "login failed", null);
+  }
+
+  public AuthResponseDto verifyMfa(VerifyMfaDto data) {
+    Optional<UserModel> userOpt = this.userRepository.findByEmail(data.email());
+    if (userOpt.isEmpty()) {
+      return new AuthResponseDto(404, "User not found", null);
+    }
+    UserModel user = userOpt.get();
+    if (user.getMfaCode() == null || user.getMfaCodeExpiresAt() == null) {
+      return new AuthResponseDto(400, "No active 2FA request found", null);
+    }
+    if (user.getMfaCodeExpiresAt().isBefore(Instant.now())) {
+      return new AuthResponseDto(400, "MFA code has expired", null);
+    }
+    if (!this.passwordEncoder.matches(data.code(), user.getMfaCode())) {
+      return new AuthResponseDto(400, "Invalid MFA code", null);
+    }
+
+    // Success! Clear code and update login time
+    user.setMfaCode(null);
+    user.setMfaCodeExpiresAt(null);
+    user.setLastLogedIn(Instant.now());
+    this.userRepository.save(user);
+
+    String token = this.jwtService.generateToken(user.getId(), user.getEmail());
+    Map<String, String> userObj = new HashMap<>();
+    userObj.put("token", token);
+    userObj.put("email", user.getEmail());
+    userObj.put("lastLogedIn", user.getLastLogedIn() != null ? user.getLastLogedIn().toString() : null);
+    userObj.put("joinedOn", user.getJoinedOn() != null ? user.getJoinedOn().toString() : null);
+    userObj.put("name", user.getName() != null ? user.getName() : user.getEmail().split("@")[0]);
+    userObj.put("avatar", user.getAvatar() != null ? user.getAvatar() : "");
+
+    return new AuthResponseDto(200, "Login successful", userObj);
   }
 
   public Optional<UserModel> loadUserByUserId(String userId) {

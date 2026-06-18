@@ -28,6 +28,7 @@ interface Profile {
   secretUpdatesEnabled: boolean;
   collabRequestsEnabled: boolean;
   cliActivityEnabled: boolean;
+  mfaEnabled: boolean;
 }
 
 interface CliToken {
@@ -57,6 +58,11 @@ const SettingsPage: React.FC = () => {
   const [showCurrentPw, setShowCurrentPw] = useState(false);
   const [showNewPw, setShowNewPw] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+
+  // ── 2FA state ──
+  const [confirmMfaOpen, setConfirmMfaOpen] = useState(false);
+  const [mfaPassword, setMfaPassword] = useState('');
+  const [togglingMfa, setTogglingMfa] = useState(false);
 
   // ── Notifications state ──
   const [notifPrefs, setNotifPrefs] = useState({
@@ -138,6 +144,41 @@ const SettingsPage: React.FC = () => {
       showToast('Failed to update profile', 'error');
     } finally {
       setSavingProfile(false);
+    }
+  };
+
+  // ── Toggle MFA ──
+  const handleToggleMfa = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mfaPassword) {
+      showToast('Password is required', 'error');
+      return;
+    }
+    setTogglingMfa(true);
+    const targetState = !profile?.mfaEnabled;
+    try {
+      const res = await axios.put(
+        `${BACKEND_URL}/users/me/mfa`,
+        { enabled: targetState, password: mfaPassword },
+        { headers }
+      );
+      if (res.data.statusCode === 200) {
+        showToast(
+          `Two-factor authentication has been ${targetState ? 'enabled' : 'disabled'}`,
+          'success'
+        );
+        if (profile) {
+          setProfile({ ...profile, mfaEnabled: targetState });
+        }
+        setConfirmMfaOpen(false);
+        setMfaPassword('');
+      } else {
+        showToast(res.data.message || 'Failed to toggle MFA', 'error');
+      }
+    } catch (err: any) {
+      showToast(err.response?.data?.message || 'Failed to toggle MFA', 'error');
+    } finally {
+      setTogglingMfa(false);
     }
   };
 
@@ -457,9 +498,57 @@ const SettingsPage: React.FC = () => {
                 <p className="mt-1 text-xs text-zinc-400">
                   Secure your projects with secondary dynamic login tokens.
                 </p>
-                <button className="mt-3 px-3.5 py-1.5 border border-blue-900/50 text-xs font-semibold rounded-full text-blue-400 bg-blue-950/20 hover:bg-blue-950/40 transition-colors duration-150">
-                  Enable 2FA Protection
-                </button>
+                {profileLoading ? (
+                  <div className="mt-3 w-5 h-5 border-2 border-zinc-600 border-t-blue-500 rounded-full animate-spin" />
+                ) : confirmMfaOpen ? (
+                  <form onSubmit={handleToggleMfa} className="mt-4 space-y-3 p-4 bg-[#1f1f23] border border-[#27272a] rounded-xl max-w-md">
+                    <p className="text-xs text-zinc-300 font-semibold">
+                      Type your password to confirm {profile?.mfaEnabled ? 'disabling' : 'enabling'} Two-Factor Authentication.
+                    </p>
+                    <input
+                      type="password"
+                      value={mfaPassword}
+                      onChange={(e) => setMfaPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      className="block w-full px-3 py-1.5 border border-[#27272a] bg-[#09090b] text-xs rounded-lg text-[#f4f4f5] focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
+                    />
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="submit"
+                        disabled={togglingMfa}
+                        className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-semibold rounded-full transition-colors duration-150"
+                      >
+                        {togglingMfa ? 'Confirming…' : 'Confirm'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setConfirmMfaOpen(false);
+                          setMfaPassword('');
+                        }}
+                        className="px-3.5 py-1.5 border border-[#27272a] text-xs font-semibold rounded-full text-zinc-400 hover:text-white hover:bg-zinc-900/50 transition-colors duration-150"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : profile?.mfaEnabled ? (
+                  <div className="mt-3 flex items-center space-x-3">
+                    <button
+                      onClick={() => setConfirmMfaOpen(true)}
+                      className="px-3.5 py-1.5 border border-zinc-700 text-xs font-semibold rounded-full text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors duration-150"
+                    >
+                      Disable 2FA Protection
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setConfirmMfaOpen(true)}
+                    className="mt-3 px-3.5 py-1.5 border border-blue-900/50 text-xs font-semibold rounded-full text-blue-400 bg-blue-950/20 hover:bg-blue-950/40 transition-colors duration-150"
+                  >
+                    Enable 2FA Protection
+                  </button>
+                )}
               </div>
             </div>
           </div>

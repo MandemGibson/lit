@@ -51,6 +51,17 @@ public class UserModel {
   @Field(name = "otp")
   private String otp;
 
+  @Field(name = "mfa_enabled")
+  private boolean mfaEnabled = false;
+
+  @Field(name = "mfa_code")
+  @Nullable
+  private String mfaCode;
+
+  @Field(name = "mfa_code_expires_at")
+  @Nullable
+  private Instant mfaCodeExpiresAt;
+
   @Field(name = "last_loged_in")
   @Nullable
   private Instant lastLogedIn;

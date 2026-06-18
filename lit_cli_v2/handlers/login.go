@@ -84,8 +84,9 @@ var loginCmd = &cobra.Command{
 		if res.StatusCode == 200 {
 			var result struct {
 				Data struct {
-					Token string `json:"token"`
-					Email string `json:"email"`
+					Token       string `json:"token"`
+					Email       string `json:"email"`
+					MfaRequired string `json:"mfaRequired"`
 				} `json:"data"`
 			}
 			err := json.NewDecoder(res.Body).Decode(&result)
@@ -95,11 +96,82 @@ var loginCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
+			if result.Data.MfaRequired == "true" {
+				s.Stop()
+				fmt.Println("💬 Two-Factor Authentication is enabled for your account.")
+				promptCode := promptui.Prompt{
+					Label: "🔑 Enter the 6-digit code sent to your email",
+					Validate: func(input string) error {
+						if len(input) != 6 {
+							return fmt.Errorf("code must be exactly 6 digits")
+						}
+						return nil
+					},
+				}
+				code, err := promptCode.Run()
+				if err != nil {
+					fmt.Println("Prompt failed:", err)
+					os.Exit(1)
+				}
+
+				s2 := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
+				s2.Suffix = " Verifying MFA code..."
+				s2.Start()
+
+				mfaPayload := map[string]string{
+					"email": email,
+					"code":  code,
+				}
+				mfaBody, _ := json.Marshal(mfaPayload)
+				mfaRes, err := client.Post(apiBackend+"/auths/verify-mfa", "application/json", bytes.NewBuffer(mfaBody))
+				if err != nil {
+					s2.FinalMSG = fmt.Sprintf("❌ Request error: %v\n", err)
+					s2.Stop()
+					os.Exit(1)
+				}
+				defer mfaRes.Body.Close()
+
+				if mfaRes.StatusCode == 200 {
+					var mfaResult struct {
+						Data struct {
+							Token string `json:"token"`
+							Email string `json:"email"`
+						} `json:"data"`
+					}
+					err := json.NewDecoder(mfaRes.Body).Decode(&mfaResult)
+					if err != nil {
+						s2.FinalMSG = "❌ Failed to parse server response\n"
+						s2.Stop()
+						os.Exit(1)
+					}
+
+					if mfaResult.Data.Token != "" {
+						saveErr := saveAuth(mfaResult.Data.Email, mfaResult.Data.Token)
+						if saveErr != nil {
+							s2.FinalMSG = fmt.Sprintf("❌ Failed to save token: %v\n", saveErr)
+							s2.Stop()
+							os.Exit(1)
+						}
+						s2.FinalMSG = fmt.Sprintf("✅ Login successful as %s!\n", mfaResult.Data.Email)
+						s2.Stop()
+						fmt.Println("🔑 Token saved locally")
+					} else {
+						s2.FinalMSG = "❌ Login failed: No token received after MFA verification.\n"
+						s2.Stop()
+					}
+				} else {
+					s2.FinalMSG = "❌ Verification failed: Invalid or expired code.\n"
+					s2.Stop()
+				}
+				return
+			}
+
 			if result.Data.Token != "" {
 				saveErr := saveAuth(result.Data.Email, result.Data.Token)
 				if saveErr != nil {
-					s.FinalMSG = fmt.Sprintf("❌ Failed to save token: %v\n", saveErr)
-					s.Stop()
+					s2 := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
+					s2.FinalMSG = fmt.Sprintf("❌ Failed to save token: %v\n", saveErr)
+					s2.Stop()
 					os.Exit(1)
 				}
 				s.FinalMSG = fmt.Sprintf("✅ Login successful as %s!\n", result.Data.Email)

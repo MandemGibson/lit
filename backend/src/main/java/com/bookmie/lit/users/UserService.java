@@ -59,6 +59,7 @@ public class UserService {
     profile.put("secretUpdatesEnabled", u.isSecretUpdatesEnabled());
     profile.put("collabRequestsEnabled", u.isCollabRequestsEnabled());
     profile.put("cliActivityEnabled", u.isCliActivityEnabled());
+    profile.put("mfaEnabled", u.isMfaEnabled());
     return new ResponseDto(200, "Profile fetched", profile);
   }
 
@@ -151,6 +152,22 @@ public class UserService {
   public ResponseDto revokeCliToken(String userId, String tokenId) {
     this.cliTokenRepository.deleteByIdAndUserId(tokenId, userId);
     return new ResponseDto(200, "Token revoked", null);
+  }
+
+  // ── Toggle MFA ────────────────────────────────────────────
+  public ResponseDto toggleMfa(String userId, ToggleMfaDto data) {
+    Optional<UserModel> user = this.userRepository.findById(userId);
+    if (user.isEmpty()) {
+      return new ResponseDto(404, "User not found", null);
+    }
+    UserModel u = user.get();
+    if (!this.passwordEncoder.matches(data.password(), u.getPassword())) {
+      return new ResponseDto(401, "Password is incorrect", null);
+    }
+    u.setMfaEnabled(data.enabled());
+    this.userRepository.save(u);
+    String status = data.enabled() ? "enabled" : "disabled";
+    return new ResponseDto(200, "Two-factor authentication has been " + status, null);
   }
 
   // ── Delete Account ────────────────────────────────────────

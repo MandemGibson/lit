@@ -76,6 +76,13 @@ public class UserController {
     return ResponseEntity.status(res.statusCode()).body(res);
   }
 
+  // ── Toggle MFA ───────────────────────────────────────────
+  @PutMapping("/me/mfa")
+  public ResponseEntity<ResponseDto> toggleMfa(Authentication auth, @RequestBody ToggleMfaDto data) {
+    ResponseDto res = this.userService.toggleMfa(this.currentUser.getId(), data);
+    return ResponseEntity.status(res.statusCode()).body(res);
+  }
+
   // ── Delete account ───────────────────────────────────────
   @DeleteMapping("/me")
   public ResponseEntity<ResponseDto> deleteAccount(Authentication auth, @RequestBody DeleteAccountDto data) {

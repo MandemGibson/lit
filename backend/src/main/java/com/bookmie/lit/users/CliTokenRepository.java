@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface CliTokenRepository extends MongoRepository<CliTokenModel, String> {
   List<CliTokenModel> findByUserId(String userId);
 
+  List<CliTokenModel> findByTokenPrefix(String tokenPrefix);
+
   void deleteByIdAndUserId(String id, String userId);
 
   void deleteAllByUserId(String userId);

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-//import { BACKEND_URL } from '../configs/constants';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
 interface User {
   email: string;
@@ -39,17 +39,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem('user');
-  };
+  }, []);
 
+  const login = useCallback((userData: User) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+  }, []);
 
-  const login = (userData: User) => {
-    localStorage.setItem("user", JSON.stringify(userData))
-    setUser(userData)
-  }
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        const isAuthRequest = error.config?.url && (error.config.url.includes('/auths/') || error.config.url.includes('/obtain-token'));
+        if (error.response && error.response.status === 401 && !isAuthRequest) {
+          logout();
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+    );
 
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
+  }, [logout]);
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isLoading }}>
