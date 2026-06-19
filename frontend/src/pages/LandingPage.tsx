@@ -11,20 +11,14 @@ import {
   RxCross1,
   RxStarFilled,
   RxGithubLogo,
-  RxTwitterLogo,
-  RxEyeOpen,
-  RxEyeNone,
   RxCopy,
   RxCheck
 } from 'react-icons/rx';
 import { useAuth } from '../contexts/AuthContext';
-import landingImg from "../assets/Animation - 1750827748544.json"
-import Lottie from 'lottie-react';
 import dashboardMockup from '../assets/dashboard_mockup.png';
 
 const LandingPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showEncrypted, setShowEncrypted] = useState(false);
   const [copiedInstall, setCopiedInstall] = useState(false);
   const { user } = useAuth();
 
@@ -115,6 +109,39 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans selection:bg-zinc-800 transition-colors duration-200">
+      <style>{`
+        @keyframes pulse-glow {
+          0%, 100% {
+            opacity: 0.15;
+            transform: scale(1) translate(0px, 0px) translate3d(0, 0, 0);
+          }
+          50% {
+            opacity: 0.25;
+            transform: scale(1.1) translate(10px, -10px) translate3d(0, 0, 0);
+          }
+        }
+        @keyframes float-glow {
+          0%, 100% {
+            transform: translate(0px, 0px) translate3d(0, 0, 0);
+          }
+          50% {
+            transform: translate(-15px, 15px) translate3d(0, 0, 0);
+          }
+        }
+        .animate-pulse-glow {
+          animation: pulse-glow 10s ease-in-out infinite;
+        }
+        .animate-float-glow {
+          animation: float-glow 15s ease-in-out infinite;
+        }
+        .grid-pattern {
+          background-image: 
+            linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+          background-size: 50px 50px;
+          background-position: center center;
+        }
+      `}</style>
       {/* Navigation Header */}
       <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
@@ -186,9 +213,18 @@ const LandingPage: React.FC = () => {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b border-[#27272a] py-20 md:py-28">
-        {/* Background Animation */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-15 pointer-events-none select-none overflow-hidden">
-          <Lottie animationData={landingImg} loop autoplay className="w-full h-full object-cover min-w-[800px]" />
+        {/* Background Animation & Glows */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
+          {/* Subtle repeating grid overlay */}
+          <div className="absolute inset-0 grid-pattern opacity-60" />
+          
+          {/* Soft multi-layered animated glow centers */}
+          <div className="absolute top-[20%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-full blur-[120px] animate-pulse-glow" />
+          <div className="absolute top-[10%] left-[25%] w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px] animate-float-glow" />
+          <div className="absolute top-[35%] right-[20%] w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[110px] animate-pulse-glow" style={{ animationDelay: '-5s' }} />
+
+          {/* Linear blend to match base theme background */}
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#09090b] to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
