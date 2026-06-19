@@ -60,6 +60,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_NOTIFICATION_API_KEY: ${{ secrets.RELEASE_NOTIFICATION_API_KEY }}
+          RELEASE_NOTIFICATION_URL: ${{ secrets.RELEASE_NOTIFICATION_URL }}
         run: |
           for i in {1..5}; do
             body=$(gh release view ${{ github.ref_name }} --json body --jq .body) && break || sleep 2
@@ -72,6 +73,7 @@ jobs:
             --arg notes "$body" \
             --arg key "$RELEASE_NOTIFICATION_API_KEY" \
             '{version: $ver, changelog: $notes, apiKey: $key}')
-          curl -X POST "https://lit-backend-479881079038.europe-west1.run.app/auths/releases-notify" \
+          url="${RELEASE_NOTIFICATION_URL:-http://localhost:8080/auths/releases-notify}"
+          curl -X POST "$url" \
             -H "Content-Type: application/json" \
             -d "$payload"
