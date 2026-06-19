@@ -12,6 +12,7 @@ import com.bookmie.lit.auths.dtos.GetTokenDto;
 import com.bookmie.lit.auths.dtos.RegisterDto;
 import com.bookmie.lit.auths.dtos.VerifyUserDto;
 import com.bookmie.lit.auths.dtos.VerifyMfaDto;
+import com.bookmie.lit.auths.dtos.ReleaseNotifyDto;
 import com.bookmie.lit.utils.dtos.ResponseDto;
 
 @RestController
@@ -42,6 +43,12 @@ public class AuthsController {
   @PostMapping("/verify-mfa")
   public ResponseEntity<AuthResponseDto> verifyMfa(@RequestBody VerifyMfaDto requestData) {
     AuthResponseDto response = this.authsService.verifyMfa(requestData);
+    return ResponseEntity.status(response.statusCode()).body(response);
+  }
+
+  @PostMapping("/releases-notify")
+  public ResponseEntity<ResponseDto> releasesNotify(@RequestBody ReleaseNotifyDto requestData) {
+    ResponseDto response = this.authsService.notifyNewRelease(requestData);
     return ResponseEntity.status(response.statusCode()).body(response);
   }
 }

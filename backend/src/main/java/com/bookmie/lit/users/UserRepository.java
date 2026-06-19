@@ -12,6 +12,5 @@ import com.bookmie.lit.users.dtos.*;
 public interface UserRepository extends MongoRepository<UserModel, String> {
   Optional<UserModel> findByEmail(String email);
    List<UserModel> findAllByIdIn(Collection<String> ids);
-
-  //List<UserSummary> customFindAllById(Iterable<String> ids);
+   List<UserModel> findAllByCliActivityEnabled(boolean cliActivityEnabled);
 }

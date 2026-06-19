@@ -27,9 +27,15 @@ import com.bookmie.lit.utils.dtos.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import com.bookmie.lit.auths.dtos.ReleaseNotifyDto;
+import java.util.List;
 
 @Service
 public class AuthsService {
+
+  @Value("${release.notification.api.key}")
+  private String releaseNotificationApiKey;
 
   @Autowired
   private UserRepository userRepository;
@@ -178,6 +184,34 @@ public class AuthsService {
     userObj.put("avatar", user.getAvatar() != null ? user.getAvatar() : "");
 
     return new AuthResponseDto(200, "Login successful", userObj);
+  }
+
+  public ResponseDto notifyNewRelease(ReleaseNotifyDto data) {
+    if (this.releaseNotificationApiKey == null || this.releaseNotificationApiKey.isEmpty()) {
+      return new ResponseDto(500, "Server configuration error: Release notification API key is not configured", null);
+    }
+    if (data.apiKey() == null || !data.apiKey().equals(this.releaseNotificationApiKey)) {
+      return new ResponseDto(403, "Forbidden: Invalid API Key", null);
+    }
+
+    List<UserModel> subscribers = this.userRepository.findAllByCliActivityEnabled(true);
+    if (subscribers.isEmpty()) {
+      return new ResponseDto(200, "No subscribed users found", null);
+    }
+
+    try {
+      String html = EmailTemplateLoader.loadTemplate("new_release.html");
+      String emailBody = html.replace("{{version}}", data.version())
+                             .replace("{{changelog}}", data.changelog());
+
+      for (UserModel subscriber : subscribers) {
+        this.emailService.sendHtmlEmail(subscriber.getEmail(), "Lit CLI " + data.version() + " Released!", emailBody);
+      }
+      return new ResponseDto(200, "Release notification emails dispatched successfully", null);
+    } catch (Exception e) {
+      System.err.println("Failed to load release notification template: " + e.getMessage());
+      return new ResponseDto(500, "Failed to process release notification: " + e.getMessage(), null);
+    }
   }
 
   public Optional<UserModel> loadUserByUserId(String userId) {

@@ -4,7 +4,6 @@ import {
   RxArrowLeft,
   RxPlus,
   RxPerson,
-  RxCode,
   RxTrash,
   RxEyeOpen,
   RxEyeNone,
@@ -16,7 +15,8 @@ import {
   RxMixerHorizontal,
   RxReload,
   RxLockClosed,
-  RxCross2
+  RxCross2,
+  RxActivityLog
 } from 'react-icons/rx';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 import InviteUserModal from '../components/InviteUserModal';
@@ -54,8 +54,23 @@ const ProjectPage: React.FC = () => {
   const [savingEnv, setSavingEnv] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  interface HistoryItem {
+    id: string;
+    projectId: string;
+    userId: string;
+    userName: string;
+    userEmail: string;
+    timestamp: string;
+    addedKeys: string[];
+    modifiedKeys: string[];
+    deletedKeys: string[];
+  }
+
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
   // UI state
-  const [activeTab, setActiveTab] = useState<'manager' | 'raw'>('manager');
+  const [activeTab, setActiveTab] = useState<'manager' | 'raw' | 'history'>('manager');
   const [searchQuery, setSearchQuery] = useState('');
   const [revealedKeys, setRevealedKeys] = useState<Record<string, boolean>>({});
   const [copiedKeys, setCopiedKeys] = useState<Record<string, boolean>>({});
@@ -140,12 +155,34 @@ const ProjectPage: React.FC = () => {
     }
   };
 
+  const fetchHistory = async () => {
+    if (!project?.id) return;
+    setLoadingHistory(true);
+    try {
+      const res = await axios.get(`${BACKEND_URL}/projects/${project.id}/history`, {
+        headers: { Authorization: `Bearer ${user?.token}` }
+      });
+      setHistory(res.data.data || []);
+    } catch (err: any) {
+      console.error(err);
+      showToast('Failed to fetch project history', 'error');
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
   useEffect(() => {
     if (project?.id) {
       fetchEnvData();
       fetchUsers();
     }
   }, [project?.id]);
+
+  useEffect(() => {
+    if (activeTab === 'history') {
+      fetchHistory();
+    }
+  }, [activeTab]);
 
   // Save changes to backend
   const saveEnvironment = async (updatedVars: EnvVariable[], rawString?: string) => {
@@ -438,6 +475,17 @@ const ProjectPage: React.FC = () => {
                 <RxReader className="h-3.5 w-3.5" />
                 <span>Raw .env Editor</span>
               </button>
+              <button
+                onClick={() => setActiveTab('history')}
+                className={`flex items-center space-x-1.5 px-3 py-1 text-[11px] font-bold rounded-full transition-colors ${
+                  activeTab === 'history'
+                    ? 'bg-[#27272a] text-white shadow-sm'
+                    : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                <RxActivityLog className="h-3.5 w-3.5" />
+                <span>Audit Logs</span>
+              </button>
             </div>
 
             {/* Actions / Search */}
@@ -544,7 +592,7 @@ const ProjectPage: React.FC = () => {
                   )}
                 </div>
               ) : (
-                filteredVariables.map((variable, idx) => {
+                filteredVariables.map((variable) => {
                   const globalIdx = variables.findIndex((v) => v.key === variable.key);
                   const isEditing = editingIndex === globalIdx;
                   const isRevealed = revealedKeys[variable.key] || false;
@@ -661,7 +709,7 @@ const ProjectPage: React.FC = () => {
                 })
               )}
             </div>
-          ) : (
+          ) : activeTab === 'raw' ? (
             /* Raw Code Editor Textarea View */
             <div className="p-6 space-y-4 bg-[#09090b]/10">
               <div className="rounded-xl overflow-hidden border border-[#27272a]">
@@ -673,7 +721,7 @@ const ProjectPage: React.FC = () => {
                 />
               </div>
               <div className="flex justify-between items-center">
-                <p className="text-[10px] text-zinc-500">
+                <p className="text-[10px] text-zinc-550">
                   Comment lines starting with `#` are ignored in visual manager.
                 </p>
                 <button
@@ -694,6 +742,130 @@ const ProjectPage: React.FC = () => {
                   )}
                 </button>
               </div>
+            </div>
+          ) : (
+            /* Audit Logs View */
+            <div className="p-6 space-y-6 bg-[#09090b]/10">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                  Project Change History
+                </h3>
+                <button
+                  onClick={fetchHistory}
+                  disabled={loadingHistory}
+                  className="inline-flex items-center px-2.5 py-1 border border-[#27272a] bg-[#18181b] text-zinc-400 rounded-full text-[11px] hover:bg-zinc-900 transition-colors disabled:opacity-50"
+                >
+                  <RxReload className={`h-3 w-3 mr-1 ${loadingHistory ? 'animate-spin' : ''}`} />
+                  Refresh
+                </button>
+              </div>
+
+              {loadingHistory ? (
+                <div className="flex flex-col items-center justify-center py-20 space-y-3">
+                  <RxReload className="h-6 w-6 text-blue-550 animate-spin" />
+                  <p className="text-xs text-zinc-550">Loading activity timeline...</p>
+                </div>
+              ) : history.length === 0 ? (
+                <div className="text-center py-16 px-4">
+                  <RxActivityLog className="h-8 w-8 mx-auto text-zinc-650 mb-3" />
+                  <h3 className="text-xs font-semibold text-white">No activity logged</h3>
+                  <p className="mt-1 text-[10px] text-zinc-550 max-w-xs mx-auto">
+                    Push variables from CLI or update them here to start recording audit logs.
+                  </p>
+                </div>
+              ) : (
+                <div className="relative pl-6 border-l border-[#27272a] space-y-8 py-2">
+                  {history.map((item) => {
+                    const dateStr = new Date(item.timestamp).toLocaleString(undefined, {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    });
+
+                    const hasChanges = item.addedKeys.length > 0 || item.modifiedKeys.length > 0 || item.deletedKeys.length > 0;
+
+                    return (
+                      <div key={item.id} className="relative group">
+                        {/* Timeline node dot */}
+                        <div className="absolute -left-[31px] top-1.5 h-4 w-4 rounded-full bg-[#18181b] border-2 border-[#27272a] group-hover:border-blue-500 transition-colors flex items-center justify-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-zinc-650 group-hover:bg-blue-500 transition-colors" />
+                        </div>
+
+                        <div className="bg-[#18181b] border border-[#27272a] hover:border-zinc-800 rounded-xl p-5 transition-all shadow-md">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[#27272a]/50 pb-3 mb-4">
+                            <div>
+                              <span className="text-xs font-bold text-white">
+                                {item.userName || item.userEmail.split('@')[0]}
+                              </span>
+                              <span className="text-[10px] text-zinc-550 ml-2">
+                                ({item.userEmail})
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-zinc-550 font-medium">
+                              {dateStr}
+                            </span>
+                          </div>
+
+                          {!hasChanges ? (
+                            <p className="text-xs text-zinc-500 italic">
+                              No changes to variable keys (e.g., environment was pushed without modifications)
+                            </p>
+                          ) : (
+                            <div className="space-y-3.5">
+                              {/* Added Keys */}
+                              {item.addedKeys.length > 0 && (
+                                <div className="flex flex-wrap items-start gap-2">
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase bg-emerald-950/40 text-emerald-450 border border-emerald-900/40">
+                                    Added
+                                  </span>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {item.addedKeys.map((key) => (
+                                      <span key={key} className="font-mono text-[11px] bg-zinc-900 px-2 py-0.5 rounded text-zinc-300 border border-[#27272a]">
+                                        {key}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Modified Keys */}
+                              {item.modifiedKeys.length > 0 && (
+                                <div className="flex flex-wrap items-start gap-2">
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase bg-amber-950/40 text-amber-450 border border-amber-900/40">
+                                    Modified
+                                  </span>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {item.modifiedKeys.map((key) => (
+                                      <span key={key} className="font-mono text-[11px] bg-zinc-900 px-2 py-0.5 rounded text-zinc-300 border border-[#27272a]">
+                                        {key}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Deleted Keys */}
+                              {item.deletedKeys.length > 0 && (
+                                <div className="flex flex-wrap items-start gap-2">
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase bg-red-950/40 text-red-400 border border-red-900/40">
+                                    Deleted
+                                  </span>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {item.deletedKeys.map((key) => (
+                                      <span key={key} className="font-mono text-[11px] bg-zinc-900 px-2 py-0.5 rounded text-zinc-350 border border-[#27272a]">
+                                        {key}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
         </div>
