@@ -52,6 +52,7 @@ public class ProjectHistoryModel {
     this.userId = userId;
     this.userName = userName;
     this.userEmail = userEmail;
+    this.timestamp = Instant.now();
     this.addedKeys = addedKeys != null ? addedKeys : new ArrayList<>();
     this.modifiedKeys = modifiedKeys != null ? modifiedKeys : new ArrayList<>();
     this.deletedKeys = deletedKeys != null ? deletedKeys : new ArrayList<>();
