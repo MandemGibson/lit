@@ -16,6 +16,7 @@ import {
 } from 'react-icons/rx';
 import { useAuth } from '../contexts/AuthContext';
 import dashboardMockup from '../assets/dashboard_mockup.png';
+import logoImg from '../assets/logo.png';
 
 const LandingPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -146,8 +147,8 @@ const LandingPage: React.FC = () => {
       <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5">
-            <div className="bg-[#18181b] p-1 rounded-md border border-[#27272a]">
-              <RxLockClosed className="h-4.5 w-4.5 text-white" />
+            <div className="bg-[#18181b] p-0.5 rounded-md border border-[#27272a] flex items-center justify-center">
+              <img src={logoImg} alt="Lit Envs Logo" className="h-5 w-5 object-contain" />
             </div>
             <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
               Lit Envs
@@ -431,8 +432,8 @@ const LandingPage: React.FC = () => {
       <footer className="border-t border-[#27272a] bg-[#09090b] py-12">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
           <div className="flex items-center space-x-2.5">
-            <div className="bg-[#18181b] p-1 rounded border border-[#27272a]">
-              <RxLockClosed className="h-3.5 w-3.5 text-zinc-400" />
+            <div className="bg-[#18181b] p-0.5 rounded border border-[#27272a] flex items-center justify-center">
+              <img src={logoImg} alt="Lit Envs Logo" className="h-4 w-4 object-contain" />
             </div>
             <span className="font-semibold text-zinc-350">Lit Envs</span>
             <span>© 2026 Lit Envs. All rights reserved.</span>

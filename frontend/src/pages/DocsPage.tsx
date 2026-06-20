@@ -12,6 +12,7 @@ import {
   RxReload,
   RxPlus,
 } from "react-icons/rx";
+import logoImg from "../assets/logo.png";
 
 const DocsPage: React.FC = () => {
   const [copied, setCopied] = useState(false);
@@ -30,8 +31,12 @@ const DocsPage: React.FC = () => {
       <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5">
-            <div className="bg-[#18181b] p-1 rounded-md border border-[#27272a]">
-              <RxLockClosed className="h-4 w-4 text-white" />
+            <div className="bg-[#18181b] p-0.5 rounded-md border border-[#27272a] flex items-center justify-center">
+              <img
+                src={logoImg}
+                alt="Lit Envs Logo"
+                className="h-4.5 w-4.5 object-contain"
+              />
             </div>
             <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
               Lit Envs

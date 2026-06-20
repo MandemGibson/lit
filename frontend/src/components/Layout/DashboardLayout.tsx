@@ -7,6 +7,7 @@ import {
   RxLockClosed
 } from 'react-icons/rx';
 import { useAuth } from '../../contexts/AuthContext';
+import logoImg from '../../assets/logo.png';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -35,8 +36,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <header className="h-16 bg-[#18181b] border-b border-[#27272a] flex items-center justify-between px-6 flex-shrink-0 z-40 relative">
         {/* Left Side: Logo */}
         <Link to="/" className="flex items-center space-x-2.5 group">
-          <div className="bg-[#27272a] p-1.5 rounded-lg border border-[#3f3f46] group-hover:border-zinc-500 transition-colors duration-200">
-            <RxLockClosed className="h-4 w-4 text-white" />
+          <div className="bg-[#27272a] p-0.5 rounded-lg border border-[#3f3f46] group-hover:border-zinc-500 transition-colors duration-200 flex items-center justify-center">
+            <img src={logoImg} alt="Lit Envs Logo" className="h-5 w-5 object-contain" />
           </div>
           <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
             Lit Envs

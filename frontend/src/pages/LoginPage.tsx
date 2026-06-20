@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import axiosInstance from 'axios';
 import { BACKEND_URL } from '../configs/constants';
 import litAuthIllustration from '../assets/lit_auth_illustration.png';
+import logoImg from '../assets/logo.png';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -93,8 +94,8 @@ const LoginPage: React.FC = () => {
         <div className="w-full max-w-sm space-y-8">
           <div>
             <Link to="/" className="inline-flex items-center space-x-2.5 group">
-              <div className="bg-[#18181b] p-1.5 rounded-lg border border-[#27272a]">
-                <RxLockClosed className="h-5 w-5 text-white" />
+              <div className="bg-[#18181b] p-0.5 rounded-lg border border-[#27272a] flex items-center justify-center">
+                <img src={logoImg} alt="Lit Envs Logo" className="h-5 w-5 object-contain" />
               </div>
               <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
                 Lit Envs
