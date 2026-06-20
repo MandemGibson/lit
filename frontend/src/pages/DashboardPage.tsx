@@ -80,7 +80,7 @@ const DashboardPage: React.FC = () => {
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in text-[#f4f4f5]">
         {/* Page Title & New Project Button */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-white">
               Projects
@@ -91,7 +91,7 @@ const DashboardPage: React.FC = () => {
           </div>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="inline-flex items-center px-3.5 py-1.5 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full transition-colors focus:outline-none shadow-sm"
+            className="inline-flex items-center px-3.5 py-1.5 bg-[#f4f4f5] hover:bg-zinc-200 text-zinc-950 text-xs font-bold rounded-full transition-colors focus:outline-none shadow-sm w-fit whitespace-nowrap"
           >
             <RxPlus className="h-4 w-4 mr-1.5" />
             New Project

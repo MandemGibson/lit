@@ -31,15 +31,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="h-screen bg-[#09090b] text-[#f4f4f5] flex flex-col font-sans overflow-hidden">
+    <div className="h-screen h-[100dvh] bg-[#09090b] text-[#f4f4f5] flex flex-col font-sans overflow-hidden">
       {/* Top Header Navigation */}
       <header className="h-16 bg-[#18181b] border-b border-[#27272a] flex items-center justify-between px-6 flex-shrink-0 z-40 relative">
         {/* Left Side: Logo */}
         <Link to="/" className="flex items-center space-x-2.5 group">
-          <div className="bg-[#27272a] p-0.5 rounded-lg border border-[#3f3f46] group-hover:border-zinc-500 transition-colors duration-200 flex items-center justify-center">
+          <div className="bg-[#27272a] p-0.5 rounded-lg border border-[#3f3f46] group-hover:border-zinc-500 transition-colors duration-200 flex items-center justify-center flex-shrink-0">
             <img src={logoImg} alt="Lit Envs Logo" className="h-5 w-5 object-contain" />
           </div>
-          <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
+          <span className="text-sm font-bold tracking-tight text-[#f4f4f5] hidden sm:block">
             Lit Envs
           </span>
         </Link>
