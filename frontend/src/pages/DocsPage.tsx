@@ -8,7 +8,6 @@ import {
   RxArrowDown,
   RxCopy,
   RxCheck,
-  RxLockClosed,
   RxReload,
   RxPlus,
 } from "react-icons/rx";
@@ -35,7 +34,7 @@ const DocsPage: React.FC = () => {
               <img
                 src={logoImg}
                 alt="Lit Envs Logo"
-                className="h-4.5 w-4.5 object-contain"
+                className="h-5 w-5 object-contain"
               />
             </div>
             <span className="text-sm font-bold tracking-tight text-[#f4f4f5]">
