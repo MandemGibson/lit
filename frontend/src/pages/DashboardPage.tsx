@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
   RxPlus,
   RxReader,
@@ -26,12 +27,21 @@ interface Project {
 }
 
 const DashboardPage: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState<'name' | 'newest' | 'oldest'>('name');
   const { user } = useAuth();
+
+  const { data: projects = [], isLoading: loading, refetch: refetchProjects } = useQuery<Project[]>({
+    queryKey: ['activeProjects'],
+    queryFn: async () => {
+      const res = await axios.get(`${BACKEND_URL}/projects/active-projects`, {
+        headers: { Authorization: `Bearer ${user?.token}` }
+      });
+      return res.data.data || [];
+    },
+    enabled: !!user?.token,
+  });
 
   const filteredProjects = projects.filter(project =>
     project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -55,26 +65,8 @@ const DashboardPage: React.FC = () => {
   });
 
   const handleCreateProject = () => {
-    fetchProjects();
+    refetchProjects();
   };
-
-  const fetchProjects = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${BACKEND_URL}/projects/active-projects`, {
-        headers: { Authorization: `Bearer ${user?.token}` }
-      });
-      setProjects(res.data.data || []);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
 
   return (
     <DashboardLayout>
@@ -240,7 +232,7 @@ const DashboardPage: React.FC = () => {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSubmit={handleCreateProject}
-        fetchProjects={fetchProjects}
+        fetchProjects={refetchProjects}
       />
     </DashboardLayout>
   );

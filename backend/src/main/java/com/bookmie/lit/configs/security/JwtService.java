@@ -55,14 +55,18 @@ public class JwtService {
   public boolean isTokenExpired(String token) {
     try {
       Date expiration = this.extractAllClaims(token).getExpiration();
-      return expiration.after(new Date());
+      return expiration.before(new Date());
     } catch (Exception e) {
-      return false;
+      return true;
     }
   }
 
   public boolean isTokenValid(String token, String userId) {
-    String extractedUserId = this.extractAllClaims(token).getSubject();
-    return (extractedUserId.equals(userId) && this.isTokenExpired(token));
+    try {
+      String extractedUserId = this.extractAllClaims(token).getSubject();
+      return (extractedUserId.equals(userId) && !this.isTokenExpired(token));
+    } catch (Exception e) {
+      return false;
+    }
   }
 }

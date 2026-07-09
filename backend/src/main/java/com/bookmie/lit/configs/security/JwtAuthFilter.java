@@ -81,11 +81,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       return;
     }
 
-    userId = this.jwtService.extractedUserId(jwt);
+    try {
+      userId = this.jwtService.extractedUserId(jwt);
+    } catch (io.jsonwebtoken.ExpiredJwtException e) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.setContentType("application/json");
+      response.getWriter().write("{\"statusCode\": 401, \"message\": \"Token has expired\", \"data\": null}");
+      return;
+    } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.setContentType("application/json");
+      response.getWriter().write("{\"statusCode\": 401, \"message\": \"Invalid token\", \"data\": null}");
+      return;
+    }
 
     if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       Optional<UserModel> userDetails = this.authsService.loadUserByUserId(userId);
-      if (jwtService.isTokenValid(jwt, userDetails.get().getId())) {
+      if (userDetails.isPresent() && jwtService.isTokenValid(jwt, userDetails.get().getId())) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             userDetails.get(), null, Collections.emptyList());
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -91,14 +91,17 @@ const SettingsPage: React.FC = () => {
     enabled: !!user?.token,
   });
 
-  const { data: billing = null, isLoading: billingLoading } = useQuery<BillingSummary | null>({
-    queryKey: ["billingSummary"],
-    queryFn: async () => {
-      const res = await axios.get(`${BACKEND_URL}/users/me/billing`, { headers });
-      return res.data.data;
-    },
-    enabled: !!user?.token && activeTab === "billing",
-  });
+  const { data: billing = null, isLoading: billingLoading } =
+    useQuery<BillingSummary | null>({
+      queryKey: ["billingSummary"],
+      queryFn: async () => {
+        const res = await axios.get(`${BACKEND_URL}/users/me/billing`, {
+          headers,
+        });
+        return res.data.data;
+      },
+      enabled: !!user?.token && activeTab === "billing",
+    });
 
   // ── Profile form values synchronization ──
   useEffect(() => {
@@ -665,39 +668,43 @@ const SettingsPage: React.FC = () => {
                         Active Plan
                       </span>
                       <h4 className="text-sm font-bold text-white">
-                        {billing?.plan === "team_annual" 
-                          ? "Team Pro (Annual) · $23/month" 
-                          : billing?.plan === "team_monthly" 
-                            ? "Team Pro (Monthly) · $29/month" 
+                        {billing?.plan === "team_annual"
+                          ? "Team Pro (Annual) · $23/month"
+                          : billing?.plan === "team_monthly"
+                            ? "Team Pro (Monthly) · $29/month"
                             : "Free · $0/month"}
                       </h4>
                     </div>
-                    
+
                     <div className="p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                       <div className="space-y-1">
                         <h5 className="text-xs font-bold text-zinc-300">
-                          {billing?.plan === "team_annual" || billing?.plan === "team_monthly" 
-                            ? "Adjust features or billing intervals?" 
+                          {billing?.plan === "team_annual" ||
+                          billing?.plan === "team_monthly"
+                            ? "Adjust features or billing intervals?"
                             : "Need more room?"}
                         </h5>
                         <p className="text-xs text-zinc-450 leading-relaxed max-w-lg font-medium">
-                          {billing?.plan === "team_annual" || billing?.plan === "team_monthly"
+                          {billing?.plan === "team_annual" ||
+                          billing?.plan === "team_monthly"
                             ? "Manage your subscription seats, billing intervals, or downgrade back to the Developer plan."
                             : "Upgrade to Pro to add unlimited projects, keep your full history, and collaborate with your team."}
                         </p>
                       </div>
-                      
+
                       <div className="flex flex-col items-center sm:items-end gap-1.5 flex-shrink-0">
                         <Link
                           to="/pricing"
                           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all duration-200 block text-center ${
-                            billing?.plan === "team_annual" || billing?.plan === "team_monthly"
+                            billing?.plan === "team_annual" ||
+                            billing?.plan === "team_monthly"
                               ? "border border-zinc-800 hover:border-zinc-700 bg-[#09090b]/80 hover:bg-[#09090b] text-zinc-300 hover:text-white"
                               : "bg-cyan-600 hover:bg-cyan-500 text-white shadow-md"
                           }`}
                         >
-                          {billing?.plan === "team_annual" || billing?.plan === "team_monthly" 
-                            ? "Manage Subscription" 
+                          {billing?.plan === "team_annual" ||
+                          billing?.plan === "team_monthly"
+                            ? "Manage Subscription"
                             : "Upgrade to Pro"}
                         </Link>
                         {(!billing?.plan || billing?.plan === "developer") && (
@@ -717,15 +724,19 @@ const SettingsPage: React.FC = () => {
                   </h4>
                   <div className="bg-[#121215]/40 rounded-xl overflow-hidden divide-y divide-[#1e1e24]/40">
                     <div className="p-4 flex items-center justify-between">
-                      <span className="text-xs font-semibold text-zinc-300">Projects</span>
+                      <span className="text-xs font-semibold text-zinc-300">
+                        Projects
+                      </span>
                       <span className="text-xs font-bold text-white font-mono">
-                        {billing?.projectsLimit === -1 
-                          ? `${billing?.projectsUsed} / Unlimited` 
+                        {billing?.projectsLimit === -1
+                          ? `${billing?.projectsUsed} / Unlimited`
                           : `${billing?.projectsUsed} / ${billing?.projectsLimit} used`}
                       </span>
                     </div>
                     <div className="p-4 flex items-center justify-between">
-                      <span className="text-xs font-semibold text-zinc-350">Collaborator seats</span>
+                      <span className="text-xs font-semibold text-zinc-350">
+                        Collaborator seats
+                      </span>
                       <span className="text-xs font-bold text-white font-mono">
                         {billing?.collaboratorsLimit === -1
                           ? `${billing?.collaboratorsUsed} / Unlimited`
@@ -733,7 +744,9 @@ const SettingsPage: React.FC = () => {
                       </span>
                     </div>
                     <div className="p-4 flex items-center justify-between">
-                      <span className="text-xs font-semibold text-zinc-350">CLI Sync Operations</span>
+                      <span className="text-xs font-semibold text-zinc-350">
+                        CLI Sync Operations
+                      </span>
                       <span className="text-xs font-bold text-white font-mono">
                         {billing?.cliSyncPriority}
                       </span>
@@ -752,13 +765,18 @@ const SettingsPage: React.FC = () => {
                   <div className="bg-[#121215]/40 rounded-xl p-5">
                     {billing?.paymentMethod ? (
                       <div className="space-y-2.5">
-                        <p className="text-xs text-zinc-400 font-semibold">Payment Method</p>
+                        <p className="text-xs text-zinc-400 font-semibold">
+                          Payment Method
+                        </p>
                         <div className="flex items-center space-x-2 text-xs font-mono text-zinc-400">
                           <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-white font-bold tracking-wider text-[10px]">
                             {billing.paymentMethod.brand}
                           </span>
                           <span>
-                            •••• •••• •••• {billing.paymentMethod.last4} (Expires {billing.paymentMethod.expMonth}/{String(billing.paymentMethod.expYear).substring(2)})
+                            •••• •••• •••• {billing.paymentMethod.last4}{" "}
+                            (Expires {billing.paymentMethod.expMonth}/
+                            {String(billing.paymentMethod.expYear).substring(2)}
+                            )
                           </span>
                         </div>
                       </div>
