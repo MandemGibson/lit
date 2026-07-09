@@ -4,7 +4,7 @@ import { RxGithubLogo } from "react-icons/rx";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#09090b] py-12 border-t border-[#1c1c1e]">
+    <footer className="bg-[#09090b] py-12">
       <div className="max-w-6xl mx-auto px-6 flex flex-col items-center justify-between gap-4 text-xs text-zinc-500">
         <h1 className="text-6xl sm:text-8xl md:text-[10vw] lg:text-[11vw] font-black tracking-tighter text-center bg-gradient-to-b from-white via-zinc-200 to-zinc-700 bg-clip-text text-transparent select-none w-full leading-none mb-4">
           LIT ENVS

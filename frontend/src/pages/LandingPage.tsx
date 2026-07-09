@@ -220,7 +220,7 @@ const LandingPage: React.FC = () => {
         }
       `}</style>
       {/* Navigation Header */}
-      <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
+      <header className="sticky top-0 z-50 bg-[#09090b]/90 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5">
             <div className="bg-[#18181b] p-0.5 rounded-md border border-[#27272a] flex items-center justify-center">

@@ -479,7 +479,7 @@ const SettingsPage: React.FC = () => {
                   <button
                     onClick={handleSaveProfile}
                     disabled={savingProfile}
-                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all duration-200"
+                    className="px-4 py-2 btn-cyan-glossy disabled:opacity-50 text-white text-xs font-bold rounded-xl"
                   >
                     {savingProfile ? "Saving…" : "Save Changes"}
                   </button>
@@ -561,7 +561,7 @@ const SettingsPage: React.FC = () => {
                 <button
                   onClick={handleChangePassword}
                   disabled={changingPassword}
-                  className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all duration-200 mt-2"
+                  className="px-4 py-2 btn-cyan-glossy disabled:opacity-50 text-white text-xs font-bold rounded-xl mt-2"
                 >
                   {changingPassword ? "Updating…" : "Update Password"}
                 </button>
@@ -600,7 +600,7 @@ const SettingsPage: React.FC = () => {
                       <button
                         type="submit"
                         disabled={togglingMfa}
-                        className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all"
+                        className="px-4 py-2 btn-cyan-glossy disabled:opacity-50 text-white text-xs font-bold rounded-xl"
                       >
                         {togglingMfa ? "Confirming…" : "Confirm"}
                       </button>
@@ -699,7 +699,7 @@ const SettingsPage: React.FC = () => {
                             billing?.plan === "team_annual" ||
                             billing?.plan === "team_monthly"
                               ? "border border-zinc-800 hover:border-zinc-700 bg-[#09090b]/80 hover:bg-[#09090b] text-zinc-300 hover:text-white"
-                              : "bg-cyan-600 hover:bg-cyan-500 text-white shadow-md"
+                              : "btn-cyan-glossy text-white"
                           }`}
                         >
                           {billing?.plan === "team_annual" ||
@@ -858,7 +858,7 @@ const SettingsPage: React.FC = () => {
                     setShowTokenForm(true);
                     setNewlyCreatedToken(null);
                   }}
-                  className="px-3.5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl transition-all duration-200 flex items-center space-x-1.5"
+                  className="px-3.5 py-2 btn-cyan-glossy text-white text-xs font-bold rounded-xl flex items-center space-x-1.5"
                 >
                   <RxPlus className="h-3.5 w-3.5" />
                   <span>Generate Token</span>
@@ -906,7 +906,7 @@ const SettingsPage: React.FC = () => {
                     <button
                       onClick={handleGenerateToken}
                       disabled={creatingToken}
-                      className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all"
+                      className="px-4 py-2 btn-cyan-glossy disabled:opacity-50 text-white text-xs font-bold rounded-xl"
                     >
                       {creatingToken ? "Creating…" : "Create"}
                     </button>
@@ -1037,7 +1037,7 @@ const SettingsPage: React.FC = () => {
               <button
                 onClick={handleSaveNotifications}
                 disabled={savingNotifs}
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-all duration-200"
+                className="px-4 py-2 btn-cyan-glossy disabled:opacity-50 text-white text-xs font-bold rounded-xl"
               >
                 {savingNotifs ? "Saving…" : "Save Preferences"}
               </button>
