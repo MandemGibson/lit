@@ -77,7 +77,7 @@ const PricingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans selection:bg-zinc-800 transition-colors duration-200">
       {/* Navigation Header */}
-      <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
+      <header className="sticky top-0 z-50 bg-[#09090b]/90 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5">
             <div className="bg-[#18181b] p-0.5 rounded-md border border-[#27272a] flex items-center justify-center">
@@ -319,7 +319,7 @@ const PricingPage: React.FC = () => {
                   ? "/signup?plan=dev"
                   : `/signup?plan=${selectedPlan}`
               }
-              className="w-full py-3.5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 text-sm shadow-[0_4px_20px_rgba(8,145,178,0.1)] hover:shadow-[0_4px_25px_rgba(8,145,178,0.2)]"
+              className="w-full py-3.5 btn-cyan-glossy text-white font-bold rounded-2xl flex items-center justify-center space-x-2 text-sm"
             >
               <span>Continue</span>
               <RxArrowRight className="h-4 w-4" />

@@ -19,6 +19,7 @@ import {
 } from "react-icons/rx";
 import DashboardLayout from "../components/Layout/DashboardLayout";
 import InviteUserModal from "../components/InviteUserModal";
+import ConfirmModal from "../components/ConfirmModal";
 import axios from "axios";
 import { BACKEND_URL } from "../configs/constants";
 import { useAuth } from "../contexts/AuthContext";
@@ -79,6 +80,23 @@ const ProjectPage: React.FC = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingKey, setEditingKey] = useState("");
   const [editingValue, setEditingValue] = useState("");
+
+  // Confirm modal state
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    onConfirm: () => void;
+    confirmText?: string;
+    isDestructive?: boolean;
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+    onConfirm: () => {},
+    confirmText: "Confirm",
+    isDestructive: false,
+  });
 
   // Nav back if state is missing
   useEffect(() => {
@@ -232,11 +250,20 @@ const ProjectPage: React.FC = () => {
   };
 
   // Delete a secret
-  const handleDeleteSecret = async (keyToDelete: string) => {
-    if (!window.confirm(`Are you sure you want to delete "${keyToDelete}"?`))
-      return;
-    const updated = variables.filter((v) => v.key !== keyToDelete);
-    await saveEnvironment(updated);
+  const handleDeleteSecret = (keyToDelete: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Delete Secret Key",
+      description: `Are you sure you want to permanently delete the variable key "${keyToDelete}"? This action cannot be undone.`,
+      confirmText: "Delete Key",
+      isDestructive: true,
+      onConfirm: async () => {
+        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+        const updated = variables.filter((v) => v.key !== keyToDelete);
+        await saveEnvironment(updated);
+        showToast(`Successfully deleted variable "${keyToDelete}"`, "success");
+      },
+    });
   };
 
   // Start Editing
@@ -270,40 +297,58 @@ const ProjectPage: React.FC = () => {
   };
 
   // Delete Project
-  const deleteProject = async (projectId: string) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to permanently delete this project? This action cannot be undone.",
-      )
-    )
-      return;
-    try {
-      setDeletingProject(true);
-      await axios.delete(`${BACKEND_URL}/projects/${projectId}`, {
-        headers: { Authorization: `Bearer ${user?.token}` },
-      });
-      navigate("/dashboard");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setDeletingProject(false);
-    }
+  const deleteProject = (projectId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Delete Project",
+      description: `WARNING: Deleting this project will permanently erase all environment variables, secrets, and collaborators associated with it. This action is irreversible.`,
+      confirmText: "Delete Project",
+      isDestructive: true,
+      onConfirm: async () => {
+        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+        try {
+          setDeletingProject(true);
+          await axios.delete(`${BACKEND_URL}/projects/${projectId}`, {
+            headers: { Authorization: `Bearer ${user?.token}` },
+          });
+          showToast("Project deleted successfully", "success");
+          navigate("/dashboard");
+        } catch (error) {
+          console.error(error);
+          showToast("Failed to delete project", "error");
+        } finally {
+          setDeletingProject(false);
+        }
+      },
+    });
   };
 
   // Remove Collaborator
-  const removeCollab = async (userId: string) => {
-    if (!window.confirm("Remove this collaborator from the project?")) return;
-    try {
-      await axios.delete(
-        `${BACKEND_URL}/projects/${project.id}/collabs/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        },
-      );
-      fetchUsers();
-    } catch (error) {
-      console.error(error);
-    }
+  const removeCollab = (userId: string, userName?: string) => {
+    const nameLabel = userName ? `"${userName}"` : "this collaborator";
+    setConfirmModal({
+      isOpen: true,
+      title: "Remove Collaborator",
+      description: `Are you sure you want to remove ${nameLabel} from the project? They will lose access to all environment configurations.`,
+      confirmText: "Remove",
+      isDestructive: true,
+      onConfirm: async () => {
+        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await axios.delete(
+            `${BACKEND_URL}/projects/${project.id}/collabs/${userId}`,
+            {
+              headers: { Authorization: `Bearer ${user?.token}` },
+            },
+          );
+          showToast("Collaborator removed successfully", "success");
+          fetchUsers();
+        } catch (error) {
+          console.error(error);
+          showToast("Failed to remove collaborator", "error");
+        }
+      },
+    });
   };
 
   // Clipboard copy helper
@@ -367,7 +412,7 @@ const ProjectPage: React.FC = () => {
             <button
               onClick={() => deleteProject(project.id)}
               disabled={deletingProject}
-              className="inline-flex items-center px-4 py-2 border border-red-950/20 text-xs font-bold rounded-xl text-red-400 bg-red-950/10 hover:bg-red-950/20 transition-all duration-200 disabled:opacity-50"
+              className="inline-flex items-center px-4 py-2 btn-red-glossy text-white text-xs font-bold rounded-xl disabled:opacity-50"
             >
               {deletingProject ? (
                 <>
@@ -802,7 +847,7 @@ const ProjectPage: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="relative pl-6 border-l border-zinc-900/60 space-y-8 py-2">
+                <div className="relative pl-6 border-l border-zinc-900/60 space-y-4 py-1">
                   {history.map((item) => {
                     const dateStr = new Date(item.timestamp).toLocaleString(
                       undefined,
@@ -818,91 +863,84 @@ const ProjectPage: React.FC = () => {
                       item.deletedKeys.length > 0;
 
                     return (
-                      <div key={item.id} className="relative group">
+                      <div
+                        key={item.id}
+                        className="relative group flex items-center min-h-[24px]"
+                      >
                         {/* Timeline node dot */}
-                        <div className="absolute -left-[32px] top-6 h-4 w-4 rounded-full bg-[#121215] border-2 border-zinc-900 group-hover:border-cyan-500 transition-colors flex items-center justify-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-zinc-650 group-hover:bg-cyan-500 transition-colors" />
+                        <div className="absolute -left-[31px] top-1/2 -translate-y-1/2 h-3.5 w-3.5 rounded-full bg-[#09090b] border-2 border-zinc-900 group-hover:border-cyan-500 transition-colors flex items-center justify-center">
+                          <div className="h-1 w-1 rounded-full bg-zinc-650 group-hover:bg-cyan-500 transition-colors" />
                         </div>
 
-                        <div className="bg-[#121215]/30 border border-zinc-900/40 rounded-2xl p-6 transition-all shadow-sm">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-zinc-900/40 pb-3 mb-4">
-                            <div>
-                              <span className="text-xs font-bold text-white font-mono">
-                                {item.userName || item.userEmail.split("@")[0]}
-                              </span>
-                              <span className="text-[10px] text-zinc-500 ml-2 font-mono">
-                                ({item.userEmail})
-                              </span>
-                            </div>
-                            <span className="text-[10px] text-zinc-550 font-semibold font-mono">
-                              {dateStr}
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-2 text-xs">
+                          <div className="text-zinc-400 font-medium">
+                            <span className="font-bold text-white mr-1.5">
+                              {item.userName || item.userEmail.split("@")[0]}
+                            </span>
+                            <span className="text-zinc-500">
+                              {!hasChanges ? (
+                                "pushed environment details with no modifications"
+                              ) : (
+                                <>
+                                  {item.addedKeys.length > 0 && (
+                                    <>
+                                      added{" "}
+                                      {item.addedKeys.map((key, idx) => (
+                                        <span
+                                          key={key}
+                                          className="font-mono text-white font-bold"
+                                        >
+                                          {key}
+                                          {idx < item.addedKeys.length - 1 &&
+                                            ", "}
+                                        </span>
+                                      ))}
+                                      {item.modifiedKeys.length > 0 ||
+                                      item.deletedKeys.length > 0
+                                        ? " and "
+                                        : ""}
+                                    </>
+                                  )}
+                                  {item.modifiedKeys.length > 0 && (
+                                    <>
+                                      modified{" "}
+                                      {item.modifiedKeys.map((key, idx) => (
+                                        <span
+                                          key={key}
+                                          className="font-mono text-white font-bold"
+                                        >
+                                          {key}
+                                          {idx < item.modifiedKeys.length - 1 &&
+                                            ", "}
+                                        </span>
+                                      ))}
+                                      {item.deletedKeys.length > 0
+                                        ? " and "
+                                        : ""}
+                                    </>
+                                  )}
+                                  {item.deletedKeys.length > 0 && (
+                                    <>
+                                      deleted{" "}
+                                      {item.deletedKeys.map((key, idx) => (
+                                        <span
+                                          key={key}
+                                          className="font-mono text-white font-bold"
+                                        >
+                                          {key}
+                                          {idx < item.deletedKeys.length - 1 &&
+                                            ", "}
+                                        </span>
+                                      ))}
+                                    </>
+                                  )}
+                                </>
+                              )}
                             </span>
                           </div>
-
-                          {!hasChanges ? (
-                            <p className="text-xs text-zinc-500 italic font-mono">
-                              No changes to variable keys (e.g., environment was
-                              pushed without modifications)
-                            </p>
-                          ) : (
-                            <div className="space-y-2 text-xs text-zinc-400 font-medium">
-                              {/* Added Keys */}
-                              {item.addedKeys.length > 0 && (
-                                <p>
-                                  Added{" "}
-                                  {item.addedKeys.length === 1
-                                    ? "variable:"
-                                    : "variables:"}{" "}
-                                  {item.addedKeys.map((key, idx) => (
-                                    <React.Fragment key={key}>
-                                      <span className="font-mono text-white font-bold">
-                                        {key}
-                                      </span>
-                                      {idx < item.addedKeys.length - 1 && ", "}
-                                    </React.Fragment>
-                                  ))}
-                                </p>
-                              )}
-
-                              {/* Modified Keys */}
-                              {item.modifiedKeys.length > 0 && (
-                                <p>
-                                  Modified{" "}
-                                  {item.modifiedKeys.length === 1
-                                    ? "variable:"
-                                    : "variables:"}{" "}
-                                  {item.modifiedKeys.map((key, idx) => (
-                                    <React.Fragment key={key}>
-                                      <span className="font-mono text-white font-bold">
-                                        {key}
-                                      </span>
-                                      {idx < item.modifiedKeys.length - 1 &&
-                                        ", "}
-                                    </React.Fragment>
-                                  ))}
-                                </p>
-                              )}
-
-                              {/* Deleted Keys */}
-                              {item.deletedKeys.length > 0 && (
-                                <p>
-                                  Deleted{" "}
-                                  {item.deletedKeys.length === 1
-                                    ? "variable:"
-                                    : "variables:"}{" "}
-                                  {item.deletedKeys.map((key, idx) => (
-                                    <React.Fragment key={key}>
-                                      <span className="font-mono text-white font-bold">
-                                        {key}
-                                      </span>
-                                      {idx < item.deletedKeys.length - 1 &&
-                                        ", "}
-                                    </React.Fragment>
-                                  ))}
-                                </p>
-                              )}
-                            </div>
-                          )}
+                          <span className="text-[10px] text-zinc-600 font-mono flex-shrink-0">
+                            {dateStr}
+                          </span>
                         </div>
                       </div>
                     );
@@ -954,7 +992,7 @@ const ProjectPage: React.FC = () => {
 
                   {member.email !== user?.email && (
                     <button
-                      onClick={() => removeCollab(member.id)}
+                      onClick={() => removeCollab(member.id, member.email)}
                       className="p-2 text-zinc-550 hover:text-red-400 hover:bg-red-950/20 rounded-xl transition-colors animate-fade-in"
                       title="Remove Collaborator"
                     >
@@ -976,6 +1014,17 @@ const ProjectPage: React.FC = () => {
           fetchUsers(); // Refresh after modal closed
         }}
         projectId={project.id}
+      />
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        description={confirmModal.description}
+        confirmText={confirmModal.confirmText}
+        isDestructive={confirmModal.isDestructive}
       />
     </DashboardLayout>
   );

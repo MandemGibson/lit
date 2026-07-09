@@ -6,7 +6,7 @@ const TermsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans selection:bg-zinc-800 pb-20">
       {/* Navigation Header */}
-      <header className="sticky top-0 z-50 bg-[#09090b]/90 border-b border-[#27272a] backdrop-blur-sm">
+      <header className="sticky top-0 z-50 bg-[#09090b]/90 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5">
             <div className="bg-[#18181b] p-0.5 rounded-md border border-[#27272a] flex items-center justify-center">

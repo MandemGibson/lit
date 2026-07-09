@@ -35,41 +35,49 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {/* Toast Portal Container */}
-      <div className="fixed bottom-5 right-5 z-55 flex flex-col space-y-3 max-w-sm w-full pointer-events-none">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className="pointer-events-auto flex items-center justify-between p-3.5 bg-gradient-to-b from-[#1c1c20] to-[#141417] border border-[#27272a] rounded-xl shadow-xl animate-slide-in-right"
-          >
-            <div className="flex items-center space-x-3">
-              {toast.type === 'success' && (
-                <div className="p-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-                  <RxCheck className="h-4 w-4" />
-                </div>
-              )}
-              {toast.type === 'error' && (
-                <div className="p-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-400">
-                  <RxCross2 className="h-4 w-4" />
-                </div>
-              )}
-              {toast.type === 'info' && (
-                <div className="p-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                  <RxInfoCircled className="h-4 w-4" />
-                </div>
-              )}
-              <p className="text-xs font-semibold text-white tracking-wide">
-                {toast.message}
-              </p>
-            </div>
-            <button
-              onClick={() => removeToast(toast.id)}
-              className="text-zinc-550 hover:text-zinc-350 ml-4 transition-colors focus:outline-none"
+      <div className="fixed bottom-6 right-6 z-55 flex flex-col space-y-3 max-w-sm w-full pointer-events-none px-4 sm:px-0">
+        {toasts.map((toast) => {
+          const typeConfig = {
+            success: {
+              borderClass: 'border-emerald-500/25 hover:border-emerald-500/40 shadow-[0_8px_32px_rgba(16,185,129,0.06)]',
+              iconBg: 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400',
+              icon: <RxCheck className="h-3.5 w-3.5" />,
+            },
+            error: {
+              borderClass: 'border-red-500/25 hover:border-red-500/40 shadow-[0_8px_32px_rgba(239,68,68,0.06)]',
+              iconBg: 'bg-red-500/10 border border-red-500/20 text-red-400',
+              icon: <RxCross2 className="h-3.5 w-3.5" />,
+            },
+            info: {
+              borderClass: 'border-cyan-500/25 hover:border-cyan-500/40 shadow-[0_8px_32px_rgba(6,182,212,0.06)]',
+              iconBg: 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400',
+              icon: <RxInfoCircled className="h-3.5 w-3.5" />,
+            },
+          };
+          const config = typeConfig[toast.type] || typeConfig.info;
+
+          return (
+            <div
+              key={toast.id}
+              className={`pointer-events-auto flex items-center justify-between p-3.5 bg-[#09090b]/90 backdrop-blur-md border rounded-2xl shadow-2xl transition-all duration-200 animate-slide-in-right ${config.borderClass}`}
             >
-              <RxCross2 className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        ))}
+              <div className="flex items-center space-x-3">
+                <div className={`p-1.5 rounded-lg flex items-center justify-center flex-shrink-0 ${config.iconBg}`}>
+                  {config.icon}
+                </div>
+                <p className="text-xs font-semibold text-[#f4f4f5] tracking-wide leading-relaxed">
+                  {toast.message}
+                </p>
+              </div>
+              <button
+                onClick={() => removeToast(toast.id)}
+                className="text-zinc-500 hover:text-white p-1 hover:bg-zinc-900/60 rounded-lg transition-all focus:outline-none flex-shrink-0 ml-4"
+              >
+                <RxCross2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          );
+        })}
       </div>
     </ToastContext.Provider>
   );

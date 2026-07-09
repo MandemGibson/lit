@@ -946,7 +946,7 @@ const SettingsPage: React.FC = () => {
                       </div>
                       <button
                         onClick={() => handleRevokeToken(token.id)}
-                        className="text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-950/20 px-3.5 py-1.5 rounded-xl border border-red-950/60 transition-all duration-150"
+                        className="text-xs font-bold text-white btn-red-glossy px-3.5 py-1.5 rounded-xl"
                       >
                         Revoke
                       </button>
@@ -1112,7 +1112,7 @@ const SettingsPage: React.FC = () => {
               {!confirmDeleteOpen ? (
                 <button
                   onClick={() => setConfirmDeleteOpen(true)}
-                  className="mt-4 px-4 py-2 border border-red-950/60 text-red-400 hover:text-red-350 bg-red-950/10 hover:bg-red-950/20 text-xs font-bold rounded-xl transition-all duration-150 focus:outline-none"
+                  className="mt-4 px-4 py-2 btn-red-glossy text-white text-xs font-bold rounded-xl focus:outline-none"
                 >
                   Delete Account
                 </button>
@@ -1132,7 +1132,7 @@ const SettingsPage: React.FC = () => {
                     <button
                       onClick={handleDeleteAccount}
                       disabled={deletingAccount}
-                      className="px-4 py-2 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-colors duration-150"
+                      className="px-4 py-2 btn-red-glossy disabled:opacity-50 text-white text-xs font-bold rounded-xl"
                     >
                       {deletingAccount ? "Deleting…" : "Confirm Delete"}
                     </button>

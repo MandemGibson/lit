@@ -17,7 +17,7 @@ import {
   RxChevronUp,
 } from "react-icons/rx";
 import { useAuth } from "../contexts/AuthContext";
-import dashboardMockup from "../assets/dashboard_mockup.png";
+import dashboardMockup from "../assets/Dashboard.png";
 import logoImg from "../assets/logo.png";
 import Footer from "../components/landing/Footer";
 

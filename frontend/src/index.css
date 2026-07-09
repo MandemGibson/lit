@@ -44,3 +44,16 @@
 .btn-cyan-glossy:hover:not(:disabled) {
   background-color: #06b6d4; /* bg-cyan-500 */
 }
+
+.btn-red-glossy {
+  background-color: #e11d48; /* bg-rose-600 */
+  box-shadow: 
+    0 2px 15px rgba(225, 29, 72, 0.15), 
+    inset 1px 1px 0 rgba(255, 255, 255, 0.35), 
+    inset -1px -1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-red-glossy:hover:not(:disabled) {
+  background-color: #f43f5e; /* bg-rose-500 */
+}
