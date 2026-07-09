@@ -60,6 +60,7 @@ public class UserService {
     profile.put("collabRequestsEnabled", u.isCollabRequestsEnabled());
     profile.put("cliActivityEnabled", u.isCliActivityEnabled());
     profile.put("mfaEnabled", u.isMfaEnabled());
+    profile.put("plan", u.getPlan() != null ? u.getPlan() : "developer");
     return new ResponseDto(200, "Profile fetched", profile);
   }
 
@@ -187,5 +188,51 @@ public class UserService {
     // Delete user
     this.userRepository.deleteById(userId);
     return new ResponseDto(200, "Account deleted", null);
+  }
+
+  // ── Get Billing & Usage Summary ───────────────────────────
+  public ResponseDto getBillingSummary(String userId) {
+    Optional<UserModel> userOpt = this.userRepository.findById(userId);
+    if (userOpt.isEmpty()) {
+      return new ResponseDto(404, "User not found", null);
+    }
+    UserModel u = userOpt.get();
+    String plan = u.getPlan() != null ? u.getPlan() : "developer";
+
+    // 1. Projects stats
+    List<com.bookmie.lit.projects.ProjectModel> ownedProjects = this.projectRepo.findByOwner(userId);
+    long projectsUsed = ownedProjects.size();
+    int projectsLimit = plan.startsWith("team") ? -1 : 3;
+
+    // 2. Collaborators stats
+    long collaboratorsUsed = ownedProjects.stream()
+        .flatMap(p -> p.getCollaborators().stream())
+        .distinct()
+        .count();
+    int collaboratorsLimit = plan.startsWith("team") ? -1 : 1;
+
+    // 3. CLI Sync priority
+    String cliSyncPriority = plan.startsWith("team") ? "High Priority" : "Standard";
+
+    // 4. Payment method placeholder if on pro plan
+    Map<String, Object> paymentMethod = null;
+    if (plan.startsWith("team")) {
+      paymentMethod = new HashMap<>();
+      paymentMethod.put("brand", "VISA");
+      paymentMethod.put("last4", "4242");
+      paymentMethod.put("expMonth", 12);
+      paymentMethod.put("expYear", 2028);
+    }
+
+    Map<String, Object> summary = new HashMap<>();
+    summary.put("plan", plan);
+    summary.put("projectsUsed", projectsUsed);
+    summary.put("projectsLimit", projectsLimit);
+    summary.put("collaboratorsUsed", collaboratorsUsed);
+    summary.put("collaboratorsLimit", collaboratorsLimit);
+    summary.put("cliSyncPriority", cliSyncPriority);
+    summary.put("paymentMethod", paymentMethod);
+
+    return new ResponseDto(200, "Billing summary fetched", summary);
   }
 }

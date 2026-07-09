@@ -147,6 +147,7 @@ public class AuthsService {
       userObj.put("joinedOn", user.getJoinedOn() != null ? user.getJoinedOn().toString() : null);
       userObj.put("name", user.getName() != null ? user.getName() : user.getEmail().split("@")[0]);
       userObj.put("avatar", user.getAvatar() != null ? user.getAvatar() : "");
+      userObj.put("plan", user.getPlan() != null ? user.getPlan() : "developer");
       return new AuthResponseDto(200, "login successful", userObj);
     }
     return new AuthResponseDto(401, "login failed", null);
@@ -182,6 +183,7 @@ public class AuthsService {
     userObj.put("joinedOn", user.getJoinedOn() != null ? user.getJoinedOn().toString() : null);
     userObj.put("name", user.getName() != null ? user.getName() : user.getEmail().split("@")[0]);
     userObj.put("avatar", user.getAvatar() != null ? user.getAvatar() : "");
+    userObj.put("plan", user.getPlan() != null ? user.getPlan() : "developer");
 
     return new AuthResponseDto(200, "Login successful", userObj);
   }

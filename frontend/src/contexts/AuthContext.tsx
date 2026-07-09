@@ -8,6 +8,7 @@ interface User {
   token: string;
   name: string;
   avatar?: string;
+  plan: string;
 }
 
 interface AuthContextType {

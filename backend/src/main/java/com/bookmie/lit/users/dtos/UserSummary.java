@@ -4,4 +4,6 @@ public interface UserSummary {
   String getId();
 
   String getEmail();
+
+  String getPlan();
 }

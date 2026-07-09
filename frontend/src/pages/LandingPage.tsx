@@ -13,6 +13,8 @@ import {
   RxGithubLogo,
   RxCopy,
   RxCheck,
+  RxChevronDown,
+  RxChevronUp,
 } from "react-icons/rx";
 import { useAuth } from "../contexts/AuthContext";
 import dashboardMockup from "../assets/dashboard_mockup.png";
@@ -24,6 +26,34 @@ const LandingPage: React.FC = () => {
   const [copiedInstall, setCopiedInstall] = useState(false);
   const { user } = useAuth();
   const heroRef = useRef<HTMLDivElement>(null);
+  const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
+
+  const faqs = [
+    {
+      q: "How does the zero-knowledge encryption model work?",
+      a: "All project secrets are encrypted client-side using AES-256-GCM before they leave your computer. The encryption key resides in your local environment profile and is never sent to our servers. We host only raw encrypted byte arrays and can never decrypt or read your secrets.",
+    },
+    {
+      q: "Can we self-host Lit Envs?",
+      a: "Yes! Our CLI and orchestration servers are engineered with self-hosting in mind. For Teams accounts, we provide official Helm charts and Docker Compose templates, together with staging migration support.",
+    },
+    {
+      q: "What happens if our team exceeds the project or variable limits?",
+      a: "We never block runtime requests or builds. If you hit variable or project limit thresholds, we notify you and provide a 14-day grace period to adjust your setup or transition plans.",
+    },
+    {
+      q: "Can I invite team members on the Free plan?",
+      a: "The Developer plan is optimized for individual workflows. To invite team members, share dashboard keys, and establish access controls, you will need the Team plan.",
+    },
+    {
+      q: "Is there a discount for annual billing?",
+      a: "Yes! Choosing annual billing gives you a discount of over 20% compared to standard monthly billing. Annual plans are invoiced yearly.",
+    },
+  ];
+
+  const toggleFaq = (idx: number) => {
+    setOpenFaqIdx(openFaqIdx === idx ? null : idx);
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
@@ -684,6 +714,56 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Accordion Section */}
+      <section className="max-w-3xl mx-auto space-y-8 py-20 px-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-white">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-xs text-zinc-500">
+            Everything you need to know about Lit Envs credentials, limits, and security.
+          </p>
+        </div>
+
+        <div className="divide-y divide-[#27272a] border-t border-b border-[#27272a]">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaqIdx === idx;
+            return (
+              <div key={idx} className="py-4">
+                <button
+                  onClick={() => toggleFaq(idx)}
+                  className="w-full flex items-center justify-between text-left focus:outline-none group"
+                >
+                  <span className="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors pr-4">
+                    {faq.q}
+                  </span>
+                  <span className="text-zinc-500 group-hover:text-zinc-350 transition-colors flex-shrink-0">
+                    {isOpen ? (
+                      <RxChevronUp className="h-4 w-4" />
+                    ) : (
+                      <RxChevronDown className="h-4 w-4" />
+                    )}
+                  </span>
+                </button>
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    isOpen
+                      ? "grid-rows-[1fr] opacity-100 mt-2.5"
+                      : "grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-xs text-zinc-400 leading-relaxed pl-1 pb-1">
+                      {faq.a}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 

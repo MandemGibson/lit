@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import LandingPage from "./pages/LandingPage";
@@ -17,10 +18,20 @@ import TermsPage from "./pages/TermsPage";
 import PricingPage from "./pages/PricingPage";
 import ScrollToTop from "./components/ScrollToTop";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
+
 function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ToastProvider>
         <Router>
           <ScrollToTop />
           <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -64,6 +75,7 @@ function App() {
         </Router>
       </ToastProvider>
     </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

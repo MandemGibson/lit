@@ -66,11 +66,22 @@ public class UserModel {
   @Nullable
   private Instant lastLogedIn;
 
+  @Field(name = "plan")
+  private String plan = "developer";
+
   public UserModel(String email, String password, String otp, String name) {
     this.email = email;
     this.password = password;
     this.otp = otp;
     this.name = name;
+  }
+
+  public String getPlan() {
+    return plan;
+  }
+
+  public void setPlan(String plan) {
+    this.plan = plan;
   }
 
   public String getId() {

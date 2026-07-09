@@ -89,4 +89,11 @@ public class UserController {
     ResponseDto res = this.userService.deleteAccount(this.currentUser.getId(), data);
     return ResponseEntity.status(res.statusCode()).body(res);
   }
+
+  // ── Get billing and usage summary ─────────────────────────
+  @GetMapping("/me/billing")
+  public ResponseEntity<ResponseDto> getBillingSummary(Authentication auth) {
+    ResponseDto res = this.userService.getBillingSummary(this.currentUser.getId());
+    return ResponseEntity.status(res.statusCode()).body(res);
+  }
 }

@@ -258,7 +258,7 @@ public class ProjectService {
 
     // Convert to DTOs
     List<UserPublicDto> collaborators = users.stream()
-        .map(user -> new UserPublicDto(user.getId(), user.getEmail()))
+        .map(user -> new UserPublicDto(user.getId(), user.getEmail(), user.getPlan()))
         .toList();
 
     return new ResponseDto(200, "Collaborators fetched", collaborators);
@@ -284,7 +284,7 @@ public class ProjectService {
 
     // Convert to DTOs
     List<UserPublicDto> collaborators = users.stream()
-        .map(user -> new UserPublicDto(user.getId(), user.getEmail()))
+        .map(user -> new UserPublicDto(user.getId(), user.getEmail(), user.getPlan()))
         .toList();
 
     return new ResponseDto(200, "Collaborator deleted", collaborators);
