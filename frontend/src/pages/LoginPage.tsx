@@ -116,8 +116,8 @@ const LoginPage: React.FC = () => {
                 <h2 className="mt-8 text-3xl font-bold tracking-tight text-[#f4f4f5] leading-tight">
                   Holla, <br /> Welcome Back
                 </h2>
-                <p className="mt-2 text-xs text-zinc-400">
-                  Hey, welcome back to your special place
+                <p className="mt-2 text-xs text-zinc-455 font-medium">
+                  Decrypt and manage your secure project variables.
                 </p>
               </>
             )}
@@ -150,7 +150,7 @@ const LoginPage: React.FC = () => {
                       maxLength={6}
                       value={mfaCode}
                       onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
-                      className="block w-full pl-10 pr-3 py-2 border border-[#27272a] rounded-lg bg-[#09090b] text-xs placeholder-zinc-650 text-white tracking-widest font-mono text-center font-bold text-lg focus:outline-none focus:ring-1 focus:ring-cyan-500/30 focus:border-cyan-500"
+                      className="block w-full pl-10 pr-3 py-2 border border-[#27272a] rounded-lg bg-[#09090b] placeholder-zinc-655 text-white tracking-widest font-mono text-center font-bold text-lg focus:outline-none focus:ring-1 focus:ring-cyan-500/30 focus:border-cyan-500"
                       placeholder="123456"
                     />
                     <RxLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
