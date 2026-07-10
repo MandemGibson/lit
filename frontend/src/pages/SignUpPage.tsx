@@ -92,7 +92,7 @@ const SignUpPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-[#27272a] rounded-lg bg-[#09090b] text-xs placeholder-zinc-650 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+                    className="block w-full pl-10 pr-3 py-2 border border-[#27272a] rounded-xl bg-[#09090b] text-xs placeholder-zinc-650 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500/30 focus:border-cyan-500 font-mono"
                     placeholder="name@example.com"
                   />
                   <RxEnvelopeClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
@@ -112,7 +112,7 @@ const SignUpPage: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-10 py-2 border border-[#27272a] rounded-lg bg-[#09090b] text-xs placeholder-zinc-650 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+                    className="block w-full pl-10 pr-10 py-2 border border-[#27272a] rounded-xl bg-[#09090b] text-xs placeholder-zinc-650 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500/30 focus:border-cyan-500 font-mono"
                     placeholder="Create password"
                   />
                   <RxLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
@@ -142,7 +142,7 @@ const SignUpPage: React.FC = () => {
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-[#27272a] rounded-lg bg-[#09090b] text-xs placeholder-zinc-650 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+                    className="block w-full pl-10 pr-3 py-2 border border-[#27272a] rounded-xl bg-[#09090b] text-xs placeholder-zinc-650 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500/30 focus:border-cyan-500 font-mono"
                     placeholder="Repeat password"
                   />
                   <RxLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
@@ -154,7 +154,7 @@ const SignUpPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2 bg-blue-600 hover:bg-blue-700 text-xs font-bold rounded-full text-white transition-colors disabled:opacity-50"
+                className="w-full flex justify-center py-2.5 btn-cyan-glossy text-xs font-bold rounded-xl text-white disabled:opacity-50"
               >
                 {isLoading ? (
                   <RxReload className="h-4 w-4 animate-spin text-white" />
@@ -170,7 +170,7 @@ const SignUpPage: React.FC = () => {
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="font-bold text-blue-500 hover:underline"
+                className="font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
               >
                 Sign in
               </Link>
