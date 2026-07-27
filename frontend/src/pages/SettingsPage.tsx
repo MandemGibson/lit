@@ -14,10 +14,14 @@ import {
   RxCross2,
   RxEyeOpen,
   RxEyeClosed,
+  RxSun,
+  RxMoon,
+  RxDesktop,
 } from "react-icons/rx";
 import DashboardLayout from "../components/Layout/DashboardLayout";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { BACKEND_URL } from "../configs/constants";
 import axios from "axios";
 
@@ -62,6 +66,7 @@ interface BillingSummary {
 const SettingsPage: React.FC = () => {
   const { user, logout } = useAuth();
   const { showToast } = useToast();
+  const { mode, setMode, resolvedTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("profile");
 
   // ── TanStack Query Fetching ──
@@ -383,6 +388,7 @@ const SettingsPage: React.FC = () => {
   // ── Tabs ────────────────────────────────────────────────────────
   const tabs = [
     { id: "profile", name: "Profile Information", icon: RxPerson },
+    { id: "appearance", name: "Appearance & Theme", icon: RxDesktop },
     { id: "security", name: "Security & Auth", icon: RxLockClosed },
     { id: "billing", name: "Billing & Plan", icon: RxCardStack },
     { id: "cli", name: "CLI Access & Install", icon: RxCode },
@@ -486,6 +492,89 @@ const SettingsPage: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
+        );
+
+      // ────────── APPEARANCE ──────────
+      case "appearance":
+        return (
+          <div className="space-y-8 animate-fade-in text-[#f4f4f5]">
+            <div>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+                Appearance & Theme
+              </h3>
+              <p className="mt-1 text-xs text-zinc-400 font-medium">
+                Customize how Lit Envs looks on your device. Choose between light, dark, or sync with your system preference.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                {
+                  id: "light" as const,
+                  title: "Light Mode",
+                  desc: "Clean bright interface for illuminated environment.",
+                  icon: RxSun,
+                },
+                {
+                  id: "dark" as const,
+                  title: "Dark Mode",
+                  desc: "Sleek dark theme optimized for low light & reduced eye strain.",
+                  icon: RxMoon,
+                },
+                {
+                  id: "system" as const,
+                  title: "System Preference",
+                  desc: "Automatically sync with your operating system light/dark theme.",
+                  icon: RxDesktop,
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                const isActive = mode === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setMode(item.id)}
+                    className={`p-5 rounded-2xl border text-left transition-all relative flex flex-col justify-between h-44 ${
+                      isActive
+                        ? "border-cyan-500 bg-cyan-500/10 dark:bg-cyan-950/20 shadow-lg shadow-cyan-500/10 dark:shadow-cyan-950/30 ring-1 ring-cyan-500/50"
+                        : "border-slate-200 dark:border-zinc-900 bg-white dark:bg-[#121215]/40 hover:border-slate-300 dark:hover:border-zinc-700"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div
+                          className={`p-2.5 rounded-xl ${
+                            isActive
+                              ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-400"
+                              : "bg-slate-100 dark:bg-zinc-800/60 text-slate-500 dark:text-zinc-400"
+                          }`}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        {isActive && (
+                          <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 uppercase tracking-wider">
+                            Active
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="text-xs font-bold text-white mb-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-[11px] text-zinc-400 leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
+
+                    <div className="text-[10px] font-mono font-semibold text-zinc-500 mt-2">
+                      {item.id === "system"
+                        ? `(System active: ${resolvedTheme})`
+                        : `${item.title}`}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         );
 

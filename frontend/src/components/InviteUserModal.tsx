@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { RxCross2, RxReload, RxEnvelopeClosed } from 'react-icons/rx';
-import axios from 'axios';
-import { BACKEND_URL } from '../configs/constants';
-import { useAuth } from '../contexts/AuthContext';
-import { useToast } from '../contexts/ToastContext';
+import React, { useState } from "react";
+import { RxCross2, RxReload, RxEnvelopeClosed } from "react-icons/rx";
+import axios from "axios";
+import { BACKEND_URL } from "../configs/constants";
+import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../contexts/ToastContext";
 
 interface InviteUserModalProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   onClose,
   projectId,
 }) => {
-  const [emailInput, setEmailInput] = useState('');
+  const [emailInput, setEmailInput] = useState("");
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -25,7 +25,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
 
   React.useEffect(() => {
     if (isOpen) {
-      setEmailInput('');
+      setEmailInput("");
       setCollaborators([]);
       setErr(null);
     }
@@ -45,7 +45,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
     }
 
     setCollaborators([...collaborators, trimmed]);
-    setEmailInput('');
+    setEmailInput("");
   };
 
   const handleRemoveCollaborator = (email: string) => {
@@ -61,7 +61,10 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
       if (emailInput.trim()) {
         const trimmedInput = emailInput.trim().toLowerCase();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailRegex.test(trimmedInput) && !emailsToSend.includes(trimmedInput)) {
+        if (
+          emailRegex.test(trimmedInput) &&
+          !emailsToSend.includes(trimmedInput)
+        ) {
           emailsToSend.push(trimmedInput);
         }
       }
@@ -76,18 +79,19 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
           axios.post(
             `${BACKEND_URL}/projects/invite`,
             { email, projectId },
-            { headers: { Authorization: `Bearer ${user?.token}` } }
-          )
-        )
+            { headers: { Authorization: `Bearer ${user?.token}` } },
+          ),
+        ),
       );
 
       showToast("Invitations sent successfully!", "success");
-      setEmailInput('');
+      setEmailInput("");
       setCollaborators([]);
       setIsLoading(false);
       onClose();
     } catch (err: any) {
-      const errMsg = err.response?.data?.message || 'Failed to send invitations';
+      const errMsg =
+        err.response?.data?.message || "Failed to send invitations";
       setErr(errMsg);
       showToast(errMsg, "error");
       setIsLoading(false);
@@ -109,7 +113,9 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
 
         {/* Header */}
         <div className="space-y-1">
-          <h3 className="text-base font-bold text-white">Invite Team Members</h3>
+          <h3 className="text-base font-bold text-white">
+            Invite Team Members
+          </h3>
           <p className="text-xs text-zinc-500 font-medium">
             Invite colleagues to collaborate on this project namespace.
           </p>
@@ -139,7 +145,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                   className="block w-full pl-12 pr-4 py-2.5 bg-[#121215]/60 focus:bg-[#16161a]/60 text-xs rounded-xl text-white placeholder-zinc-700 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-all font-mono"
                   placeholder="collaborator@example.com"
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === "Enter") {
                       e.preventDefault();
                       handleAddCollaborator();
                     }
@@ -193,7 +199,9 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
             </button>
             <button
               type="submit"
-              disabled={isLoading || (collaborators.length === 0 && !emailInput.trim())}
+              disabled={
+                isLoading || (collaborators.length === 0 && !emailInput.trim())
+              }
               className="px-5 py-2.5 text-xs font-bold text-white btn-cyan-glossy rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-all"
             >
               {isLoading ? (
@@ -202,7 +210,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                   Sending...
                 </>
               ) : (
-                'Send Invitations'
+                "Send Invitations"
               )}
             </button>
           </div>

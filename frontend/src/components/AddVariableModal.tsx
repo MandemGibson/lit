@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { RxCross2, RxReload } from 'react-icons/rx';
-import axios from 'axios';
-import { BACKEND_URL } from '../configs/constants';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { RxCross2, RxReload } from "react-icons/rx";
+import axios from "axios";
+import { BACKEND_URL } from "../configs/constants";
+import { useAuth } from "../contexts/AuthContext";
 
 interface AddVariableModalProps {
   projectId: string;
@@ -26,17 +26,21 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
     setIsLoading(true);
 
     try {
-      const res = await axios.put(`${BACKEND_URL}/projects/update-env-data/${projectId}/`, {
-        envData: envVars
-      }, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`
-        }
-      });
+      const res = await axios.put(
+        `${BACKEND_URL}/projects/update-env-data/${projectId}/`,
+        {
+          envData: envVars,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        },
+      );
 
       console.log(res.data);
-      onSubmit('', '');
-      setEnvVars('');
+      onSubmit("", "");
+      setEnvVars("");
       setIsLoading(false);
       onClose();
     } catch (err) {
@@ -64,7 +68,10 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label htmlFor="envVar" className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+            <label
+              htmlFor="envVar"
+              className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5"
+            >
               Environment Variables (.env block)
             </label>
             <textarea
@@ -77,7 +84,11 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
               className="block w-full px-3 py-2 border border-[#27272a] bg-[#09090b] text-xs rounded-lg text-[#f4f4f5] placeholder-zinc-650 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono resize-none"
             />
             <p className="mt-1.5 text-[11px] text-zinc-450">
-              Paste standard <code className="p-0.5 bg-[#09090b] rounded text-zinc-300 font-mono">.env</code> formatted key-value pairs to merge/update.
+              Paste standard{" "}
+              <code className="p-0.5 bg-[#09090b] rounded text-zinc-300 font-mono">
+                .env
+              </code>{" "}
+              formatted key-value pairs to merge/update.
             </p>
           </div>
 
@@ -100,7 +111,7 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
                   Adding...
                 </>
               ) : (
-                'Add Variables'
+                "Add Variables"
               )}
             </button>
           </div>

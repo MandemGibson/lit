@@ -56,7 +56,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             type="button"
             onClick={onConfirm}
             className={`px-5 py-2.5 text-xs font-bold rounded-xl transition-all ${
-              isDestructive ? "btn-red-glossy text-white" : "btn-cyan-glossy text-white"
+              isDestructive
+                ? "btn-red-glossy text-white"
+                : "btn-cyan-glossy text-white"
             }`}
           >
             {confirmText}

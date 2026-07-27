@@ -34,9 +34,9 @@
 
 .btn-cyan-glossy {
   background-color: #0891b2; /* bg-cyan-600 */
-  box-shadow: 
-    0 2px 15px rgba(8, 145, 178, 0.15), 
-    inset 1px 1px 0 rgba(255, 255, 255, 0.35), 
+  box-shadow:
+    0 2px 15px rgba(8, 145, 178, 0.15),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.35),
     inset -1px -1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -47,13 +47,172 @@
 
 .btn-red-glossy {
   background-color: #e11d48; /* bg-rose-600 */
-  box-shadow: 
-    0 2px 15px rgba(225, 29, 72, 0.15), 
-    inset 1px 1px 0 rgba(255, 255, 255, 0.35), 
+  box-shadow:
+    0 2px 15px rgba(225, 29, 72, 0.15),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.35),
     inset -1px -1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-red-glossy:hover:not(:disabled) {
   background-color: #f43f5e; /* bg-rose-500 */
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLOBAL LIGHT MODE STYLING OVERRIDES
+   Automatically converts dark-token utility classes when light mode is active.
+   ───────────────────────────────────────────────────────────── */
+
+html:not(.dark) {
+  color-scheme: light;
+}
+
+html:not(.dark) body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Core background color overrides */
+html:not(.dark) .bg-\[\#09090b\] {
+  background-color: #f8fafc !important;
+}
+
+html:not(.dark) .bg-\[\#09090b\]\/80,
+html:not(.dark) .bg-\[\#09090b\]\/90 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html:not(.dark) .bg-\[\#121215\] {
+  background-color: #ffffff !important;
+}
+
+html:not(.dark) .bg-\[\#121215\]\/10 {
+  background-color: #f1f5f9 !important;
+}
+
+html:not(.dark) .bg-\[\#121215\]\/20,
+html:not(.dark) .bg-\[\#121215\]\/30,
+html:not(.dark) .bg-\[\#121215\]\/40,
+html:not(.dark) .bg-\[\#121215\]\/50,
+html:not(.dark) .bg-\[\#121215\]\/60,
+html:not(.dark) .bg-\[\#121215\]\/80 {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+html:not(.dark) .bg-\[\#18181b\] {
+  background-color: #f1f5f9 !important;
+}
+
+html:not(.dark) .bg-zinc-900,
+html:not(.dark) .bg-zinc-900\/60 {
+  background-color: #e2e8f0 !important;
+}
+
+html:not(.dark) .bg-\[\#09090b\]\/60 {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+}
+
+/* Typography color overrides */
+html:not(.dark) .text-\[\#f4f4f5\] {
+  color: #0f172a !important;
+}
+
+html:not(.dark) h1.text-white,
+html:not(.dark) h2.text-white,
+html:not(.dark) h3.text-white,
+html:not(.dark) h4.text-white,
+html:not(.dark) p.text-white {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .text-zinc-200,
+html:not(.dark) .text-zinc-250,
+html:not(.dark) .text-zinc-300,
+html:not(.dark) .text-zinc-350,
+html:not(.dark) .text-zinc-450 {
+  color: #334155 !important;
+}
+
+html:not(.dark) .text-zinc-400,
+html:not(.dark) .text-zinc-500,
+html:not(.dark) .text-zinc-550,
+html:not(.dark) .text-zinc-650 {
+  color: #64748b !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PRESERVE BUTTON STYLES IN LIGHT MODE
+   Ensures buttons retain identical styling, backgrounds, and text in both modes.
+   ───────────────────────────────────────────────────────────── */
+
+html:not(.dark) button.text-white,
+html:not(.dark) button .text-white,
+html:not(.dark) .btn-cyan-glossy,
+html:not(.dark) .btn-cyan-glossy *,
+html:not(.dark) .btn-red-glossy,
+html:not(.dark) .btn-red-glossy * {
+  color: #ffffff !important;
+}
+
+html:not(.dark) .btn-cyan-glossy {
+  background-color: #0891b2 !important;
+}
+
+html:not(.dark) .btn-cyan-glossy:hover:not(:disabled) {
+  background-color: #06b6d4 !important;
+}
+
+html:not(.dark) .btn-red-glossy {
+  background-color: #e11d48 !important;
+}
+
+html:not(.dark) .btn-red-glossy:hover:not(:disabled) {
+  background-color: #f43f5e !important;
+}
+
+/* Input elements */
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Borders & Dividers */
+html:not(.dark) .border-zinc-900,
+html:not(.dark) .border-zinc-900\/40,
+html:not(.dark) .border-zinc-900\/50,
+html:not(.dark) .border-zinc-900\/60,
+html:not(.dark) .border-zinc-900\/80,
+html:not(.dark) .border-zinc-800,
+html:not(.dark) .border-\[\#27272a\],
+html:not(.dark) .border-\[\#1e1e24\]\/40,
+html:not(.dark) .divide-zinc-900,
+html:not(.dark) .divide-zinc-900\/40,
+html:not(.dark) .divide-zinc-900\/60,
+html:not(.dark) .divide-zinc-800 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Hover States */
+html:not(.dark) .hover\:bg-\[\#121215\]\/20:hover,
+html:not(.dark) .hover\:bg-\[\#121215\]\/40:hover,
+html:not(.dark) .hover\:bg-\[\#121215\]\/60:hover,
+html:not(.dark) .hover\:bg-zinc-800\/40:hover,
+html:not(.dark) .hover\:bg-zinc-900\/20:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Modals & Dropdowns */
+html:not(.dark) .shadow-2xl {
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
 }

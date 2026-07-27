@@ -501,7 +501,7 @@ const ProjectPage: React.FC = () => {
         {/* Variables Section Wrapper (Borderless) */}
         <div className="space-y-6">
           {/* View Mode Tabs bottom indicator style */}
-          <div className="border-b border-zinc-900/60 pb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="border-b border-slate-200 dark:border-zinc-900/60 pb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex space-x-6">
               {[
                 { id: "manager", label: "Secrets Manager" },
@@ -513,8 +513,8 @@ const ProjectPage: React.FC = () => {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`text-xs font-bold transition-all relative pb-3 -mb-[13px] ${
                     activeTab === tab.id
-                      ? "text-cyan-400"
-                      : "text-zinc-550 hover:text-zinc-300"
+                      ? "text-cyan-600 dark:text-cyan-400"
+                      : "text-slate-500 hover:text-slate-800 dark:text-zinc-550 dark:hover:text-zinc-300"
                   }`}
                 >
                   <span>{tab.label}</span>
@@ -529,13 +529,13 @@ const ProjectPage: React.FC = () => {
             {activeTab === "manager" && (
               <div className="flex flex-1 md:justify-end items-center gap-3">
                 <div className="relative flex-1 max-w-xs">
-                  <RxMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
+                  <RxMagnifyingGlass className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 dark:text-zinc-500" />
                   <input
                     type="text"
                     placeholder="Search keys/values..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full pl-10 pr-4 py-1.5 border border-zinc-900 bg-[#121215]/40 text-xs placeholder-zinc-550 text-white focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600/25 rounded-xl transition-all"
+                    className="block w-full pl-10 pr-4 py-1.5 border border-slate-200 dark:border-zinc-900 bg-white dark:bg-[#121215]/40 text-xs placeholder-slate-400 dark:placeholder-zinc-550 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600/25 rounded-xl transition-all"
                   />
                 </div>
                 <button
@@ -552,17 +552,17 @@ const ProjectPage: React.FC = () => {
           {loadingEnv ? (
             <div className="flex flex-col items-center justify-center py-20 space-y-3">
               <RxReload className="h-5 w-5 text-cyan-500 animate-spin" />
-              <p className="text-xs text-zinc-500 font-semibold">
+              <p className="text-xs text-slate-500 dark:text-zinc-500 font-semibold">
                 Decrypting secure environment...
               </p>
             </div>
           ) : activeTab === "manager" ? (
-            <div className="divide-y divide-zinc-900/40">
+            <div className="divide-y divide-slate-200 dark:divide-zinc-900/40">
               {/* Inline Add Secret Form */}
               {isAddingInline && (
                 <form
                   onSubmit={handleAddSecret}
-                  className="p-4 bg-[#121215]/20 border border-zinc-900/60 rounded-2xl flex flex-col md:flex-row gap-3 mb-4 animate-fade-in"
+                  className="p-4 bg-slate-50 dark:bg-[#121215]/20 border border-slate-200 dark:border-zinc-900/60 rounded-2xl flex flex-col md:flex-row gap-3 mb-4 animate-fade-in"
                 >
                   <div className="flex-1">
                     <input
@@ -571,7 +571,7 @@ const ProjectPage: React.FC = () => {
                       required
                       value={newKey}
                       onChange={(e) => setNewKey(e.target.value)}
-                      className="block w-full px-3.5 py-2 border border-zinc-900 bg-[#09090b] rounded-xl text-xs font-mono placeholder-zinc-650 text-white focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 transition-all"
+                      className="block w-full px-3.5 py-2 border border-slate-200 dark:border-zinc-900 bg-white dark:bg-[#09090b] rounded-xl text-xs font-mono placeholder-slate-400 dark:placeholder-zinc-650 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 transition-all"
                     />
                   </div>
                   <div className="flex-[2]">
@@ -580,7 +580,7 @@ const ProjectPage: React.FC = () => {
                       placeholder="Value"
                       value={newValue}
                       onChange={(e) => setNewValue(e.target.value)}
-                      className="block w-full px-3.5 py-2 border border-zinc-900 bg-[#09090b] rounded-xl text-xs font-mono placeholder-zinc-650 text-white focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 transition-all"
+                      className="block w-full px-3.5 py-2 border border-slate-200 dark:border-zinc-900 bg-white dark:bg-[#09090b] rounded-xl text-xs font-mono placeholder-slate-400 dark:placeholder-zinc-650 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 transition-all"
                     />
                   </div>
                   <div className="flex items-center space-x-2">
@@ -603,7 +603,7 @@ const ProjectPage: React.FC = () => {
                         setNewValue("");
                         setIsAddingInline(false);
                       }}
-                      className="text-zinc-550 hover:text-white rounded-xl text-xs font-bold py-2 px-3"
+                      className="text-slate-500 hover:text-slate-800 dark:text-zinc-550 dark:hover:text-white rounded-xl text-xs font-bold py-2 px-3"
                     >
                       Cancel
                     </button>
@@ -613,7 +613,7 @@ const ProjectPage: React.FC = () => {
 
               {/* Secrets Table Header */}
               {filteredVariables.length > 0 && (
-                <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-wider font-mono">
+                <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider font-mono">
                   <div className="col-span-5">Key</div>
                   <div className="col-span-5">Value</div>
                   <div className="col-span-2 text-right">Actions</div>
@@ -622,12 +622,12 @@ const ProjectPage: React.FC = () => {
 
               {/* Secrets List Rows */}
               {filteredVariables.length === 0 ? (
-                <div className="text-center py-16 bg-[#121215]/20 rounded-2xl">
-                  <RxLockClosed className="h-8 w-8 mx-auto text-zinc-700 mb-3" />
-                  <h3 className="text-xs font-semibold text-white">
+                <div className="text-center py-16 bg-slate-50 dark:bg-[#121215]/20 border border-slate-200 dark:border-zinc-900/60 rounded-2xl">
+                  <RxLockClosed className="h-8 w-8 mx-auto text-slate-400 dark:text-zinc-700 mb-3" />
+                  <h3 className="text-xs font-semibold text-slate-800 dark:text-white">
                     No environment secrets
                   </h3>
-                  <p className="mt-1 text-[10px] text-zinc-550 max-w-xs mx-auto font-medium">
+                  <p className="mt-1 text-[10px] text-slate-500 dark:text-zinc-550 max-w-xs mx-auto font-medium">
                     {searchQuery
                       ? "Adjust your search query."
                       : "Create a variable or paste bulk .env contents."}
@@ -652,7 +652,7 @@ const ProjectPage: React.FC = () => {
                   return (
                     <div
                       key={variable.key}
-                      className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-6 py-4 items-center hover:bg-[#121215]/20 transition-colors group"
+                      className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-6 py-4 items-center hover:bg-slate-100/80 dark:hover:bg-[#121215]/20 transition-colors group"
                     >
                       {/* Key Column */}
                       <div className="col-span-1 md:col-span-5 flex items-center space-x-2">
@@ -661,11 +661,11 @@ const ProjectPage: React.FC = () => {
                             type="text"
                             value={editingKey}
                             onChange={(e) => setEditingKey(e.target.value)}
-                            className="block w-full px-3.5 py-1.5 text-xs font-mono border border-zinc-900 bg-[#09090b] rounded-xl focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 text-white"
+                            className="block w-full px-3.5 py-1.5 text-xs font-mono border border-slate-200 dark:border-zinc-900 bg-white dark:bg-[#09090b] rounded-xl focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 text-slate-900 dark:text-white"
                           />
                         ) : (
                           <div className="flex items-center space-x-1.5 truncate">
-                            <span className="font-mono text-xs font-bold text-[#f4f4f5]">
+                            <span className="font-mono text-xs font-bold text-slate-900 dark:text-[#f4f4f5]">
                               {variable.key}
                             </span>
                             <button
@@ -675,11 +675,11 @@ const ProjectPage: React.FC = () => {
                                   `k-${variable.key}`,
                                 )
                               }
-                              className="opacity-0 group-hover:opacity-100 text-zinc-550 hover:text-white transition-opacity p-0.5"
+                              className="opacity-0 group-hover:opacity-100 text-slate-400 dark:text-zinc-550 hover:text-slate-700 dark:hover:text-white transition-opacity p-0.5"
                               title="Copy Key"
                             >
                               {copiedKeys[`k-${variable.key}`] ? (
-                                <RxCheck className="h-3.5 w-3.5 text-cyan-400" />
+                                <RxCheck className="h-3.5 w-3.5 text-cyan-500 dark:text-cyan-400" />
                               ) : (
                                 <RxCopy className="h-3.5 w-3.5" />
                               )}
@@ -695,11 +695,11 @@ const ProjectPage: React.FC = () => {
                             type="text"
                             value={editingValue}
                             onChange={(e) => setEditingValue(e.target.value)}
-                            className="block w-full px-3.5 py-1.5 text-xs font-mono border border-zinc-900 bg-[#09090b] rounded-xl focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 text-white"
+                            className="block w-full px-3.5 py-1.5 text-xs font-mono border border-slate-200 dark:border-zinc-900 bg-white dark:bg-[#09090b] rounded-xl focus:outline-none focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 text-slate-900 dark:text-white"
                           />
                         ) : (
-                          <div className="flex items-center justify-between w-full bg-[#121215]/40 px-3.5 py-1.5 border border-zinc-900/60 rounded-xl">
-                            <span className="font-mono text-xs text-zinc-400 select-all truncate max-w-[80%]">
+                          <div className="flex items-center justify-between w-full bg-slate-100/80 dark:bg-[#121215]/40 px-3.5 py-1.5 border border-slate-200 dark:border-zinc-900/60 rounded-xl">
+                            <span className="font-mono text-xs text-slate-600 dark:text-zinc-400 select-all truncate max-w-[80%]">
                               {isRevealed ? variable.value : "••••••••••••••••"}
                             </span>
                             <div className="flex items-center space-x-1">
@@ -847,7 +847,7 @@ const ProjectPage: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="relative pl-6 border-l border-zinc-900/60 space-y-4 py-1">
+                <div className="relative pl-6 border-l border-slate-200 dark:border-zinc-900/60 space-y-4 py-1">
                   {history.map((item) => {
                     const dateStr = new Date(item.timestamp).toLocaleString(
                       undefined,
@@ -868,16 +868,16 @@ const ProjectPage: React.FC = () => {
                         className="relative group flex items-center min-h-[24px]"
                       >
                         {/* Timeline node dot */}
-                        <div className="absolute -left-[31px] top-1/2 -translate-y-1/2 h-3.5 w-3.5 rounded-full bg-[#09090b] border-2 border-zinc-900 group-hover:border-cyan-500 transition-colors flex items-center justify-center">
-                          <div className="h-1 w-1 rounded-full bg-zinc-650 group-hover:bg-cyan-500 transition-colors" />
+                        <div className="absolute -left-[31px] top-1/2 -translate-y-1/2 h-3.5 w-3.5 rounded-full bg-white dark:bg-[#09090b] border-2 border-slate-300 dark:border-zinc-900 group-hover:border-cyan-500 transition-colors flex items-center justify-center">
+                          <div className="h-1 w-1 rounded-full bg-slate-400 dark:bg-zinc-650 group-hover:bg-cyan-500 transition-colors" />
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-2 text-xs">
-                          <div className="text-zinc-400 font-medium">
-                            <span className="font-bold text-white mr-1.5">
+                          <div className="text-slate-600 dark:text-zinc-400 font-medium">
+                            <span className="font-bold text-slate-900 dark:text-white mr-1.5">
                               {item.userName || item.userEmail.split("@")[0]}
                             </span>
-                            <span className="text-zinc-500">
+                            <span className="text-slate-500 dark:text-zinc-500">
                               {!hasChanges ? (
                                 "pushed environment details with no modifications"
                               ) : (
@@ -888,7 +888,7 @@ const ProjectPage: React.FC = () => {
                                       {item.addedKeys.map((key, idx) => (
                                         <span
                                           key={key}
-                                          className="font-mono text-white font-bold"
+                                          className="font-mono text-slate-900 dark:text-white font-bold"
                                         >
                                           {key}
                                           {idx < item.addedKeys.length - 1 &&
@@ -907,7 +907,7 @@ const ProjectPage: React.FC = () => {
                                       {item.modifiedKeys.map((key, idx) => (
                                         <span
                                           key={key}
-                                          className="font-mono text-white font-bold"
+                                          className="font-mono text-slate-900 dark:text-white font-bold"
                                         >
                                           {key}
                                           {idx < item.modifiedKeys.length - 1 &&
@@ -925,7 +925,7 @@ const ProjectPage: React.FC = () => {
                                       {item.deletedKeys.map((key, idx) => (
                                         <span
                                           key={key}
-                                          className="font-mono text-white font-bold"
+                                          className="font-mono text-slate-900 dark:text-white font-bold"
                                         >
                                           {key}
                                           {idx < item.deletedKeys.length - 1 &&
@@ -938,7 +938,7 @@ const ProjectPage: React.FC = () => {
                               )}
                             </span>
                           </div>
-                          <span className="text-[10px] text-zinc-600 font-mono flex-shrink-0">
+                          <span className="text-[10px] text-slate-400 dark:text-zinc-600 font-mono flex-shrink-0">
                             {dateStr}
                           </span>
                         </div>
