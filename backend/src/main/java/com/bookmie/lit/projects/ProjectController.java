@@ -1,7 +1,5 @@
 package com.bookmie.lit.projects;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,14 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookmie.lit.configs.components.CurrentUser;
-import com.bookmie.lit.projects.dtos.AddCollaboratorDto;
-import com.bookmie.lit.projects.dtos.CreateProjectDto;
-import com.bookmie.lit.projects.dtos.InviteUserDto;
-import com.bookmie.lit.projects.dtos.UpdateEnvDataDto;
+import com.bookmie.lit.projects.dtos.*;
 import com.bookmie.lit.utils.dtos.ResponseDto;
 
 @RestController

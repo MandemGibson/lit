@@ -1,6 +1,5 @@
 package com.bookmie.lit.auths.dtos;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

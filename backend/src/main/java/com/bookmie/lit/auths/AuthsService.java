@@ -4,16 +4,14 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bookmie.lit.auths.dtos.AuthResponseDto;
-import com.bookmie.lit.auths.dtos.PendingUserDto;
+// import com.bookmie.lit.auths.dtos.PendingUserDto;
 import com.bookmie.lit.auths.dtos.RegisterDto;
 import com.bookmie.lit.auths.dtos.VerifyMfaDto;
 import com.bookmie.lit.utils.*;
@@ -24,9 +22,9 @@ import com.bookmie.lit.users.UserModel;
 import com.bookmie.lit.users.UserRepository;
 import com.bookmie.lit.utils.Contrib;
 import com.bookmie.lit.utils.dtos.ResponseDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.data.redis.core.RedisTemplate;
+// import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import com.bookmie.lit.auths.dtos.ReleaseNotifyDto;
 import java.util.List;
@@ -43,11 +41,11 @@ public class AuthsService {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  // @Autowired
+  // private ObjectMapper objectMapper;
 
-  @Autowired
-  private RedisTemplate redisTemplate;
+  // @Autowired
+  // private RedisTemplate redisTemplate;
 
   @Autowired
   private EmailService emailService;
@@ -58,10 +56,10 @@ public class AuthsService {
   public ResponseDto registerUser(RegisterDto data) {
     String email = data.email();
     String password = passwordEncoder.encode(data.password());
-    String pendingUserId = "pending_user_" + email;
+    // String pendingUserId = "pending_user_" + email;
     String otpCOde = Contrib.generateOtpCode().toString();
     String hashedOtp = this.passwordEncoder.encode(otpCOde);
-    PendingUserDto newPendingUser = new PendingUserDto(email, password, hashedOtp);
+    // PendingUserDto newPendingUser = new PendingUserDto(email, password, hashedOtp);
     if (this.userRepository.findByEmail(email).isPresent()) {
       return new ResponseDto(400, "Email already exists", null);
     }
@@ -88,16 +86,17 @@ public class AuthsService {
 
   public ResponseDto verifyUser(VerifyUserDto data) {
     System.out.println(data.token());
-    //String pendingUserId = "pending_user_" + data.email();
-    Optional<UserModel>  pendingUserOtp = this.userRepository.findByEmail(data.email());
+    // String pendingUserId = "pending_user_" + data.email();
+    Optional<UserModel> pendingUserOtp = this.userRepository.findByEmail(data.email());
 
     if (pendingUserOtp.isEmpty()) {
-      //Map<String, String> emailPayload = new HashMap<>();
-      //emailPayload.put("email", data.email());
+      // Map<String, String> emailPayload = new HashMap<>();
+      // emailPayload.put("email", data.email());
       return new ResponseDto(400, "Invalid code or code", null);
     }
     try {
-      //PendingUserDto userObj = this.objectMapper.readValue(pendingUser.toString(), PendingUserDto.class);
+      // PendingUserDto userObj = this.objectMapper.readValue(pendingUser.toString(),
+      // PendingUserDto.class);
       UserModel pendingUser = pendingUserOtp.get();
       if (this.passwordEncoder.matches(data.token(), pendingUser.getOtp())) {
         pendingUser.setOtp(null);
@@ -204,7 +203,7 @@ public class AuthsService {
     try {
       String html = EmailTemplateLoader.loadTemplate("new_release.html");
       String emailBody = html.replace("{{version}}", data.version())
-                             .replace("{{changelog}}", data.changelog());
+          .replace("{{changelog}}", data.changelog());
 
       for (UserModel subscriber : subscribers) {
         this.emailService.sendHtmlEmail(subscriber.getEmail(), "Lit CLI " + data.version() + " Released!", emailBody);
