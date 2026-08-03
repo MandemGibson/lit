@@ -2,35 +2,35 @@ package com.bookmie.lit.auths;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bookmie.lit.auths.dtos.AuthResponseDto;
-// import com.bookmie.lit.auths.dtos.PendingUserDto;
 import com.bookmie.lit.auths.dtos.RegisterDto;
+import com.bookmie.lit.auths.dtos.ReleaseNotifyDto;
 import com.bookmie.lit.auths.dtos.VerifyMfaDto;
-import com.bookmie.lit.utils.*;
 import com.bookmie.lit.auths.dtos.VerifyUserDto;
 import com.bookmie.lit.configs.security.JwtService;
 import com.bookmie.lit.configs.services.EmailService;
 import com.bookmie.lit.users.UserModel;
 import com.bookmie.lit.users.UserRepository;
 import com.bookmie.lit.utils.Contrib;
+import com.bookmie.lit.utils.EmailTemplateLoader;
 import com.bookmie.lit.utils.dtos.ResponseDto;
-// import com.fasterxml.jackson.databind.ObjectMapper;
-
-// import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.beans.factory.annotation.Value;
-import com.bookmie.lit.auths.dtos.ReleaseNotifyDto;
-import java.util.List;
 
 @Service
 public class AuthsService {
+
+  private static final Logger log = LoggerFactory.getLogger(AuthsService.class);
 
   @Value("${release.notification.api.key}")
   private String releaseNotificationApiKey;
@@ -41,12 +41,6 @@ public class AuthsService {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  // @Autowired
-  // private ObjectMapper objectMapper;
-
-  // @Autowired
-  // private RedisTemplate redisTemplate;
-
   @Autowired
   private EmailService emailService;
 
@@ -56,59 +50,45 @@ public class AuthsService {
   public ResponseDto registerUser(RegisterDto data) {
     String email = data.email();
     String password = passwordEncoder.encode(data.password());
-    // String pendingUserId = "pending_user_" + email;
-    String otpCOde = Contrib.generateOtpCode().toString();
-    String hashedOtp = this.passwordEncoder.encode(otpCOde);
-    // PendingUserDto newPendingUser = new PendingUserDto(email, password, hashedOtp);
+    String otpCode = Contrib.generateOtpCode().toString();
+    String hashedOtp = this.passwordEncoder.encode(otpCode);
+
     if (this.userRepository.findByEmail(email).isPresent()) {
       return new ResponseDto(400, "Email already exists", null);
     }
     try {
-      // String strNewPendingUser = objectMapper.writeValueAsString(newPendingUser);
-      // if (this.redisTemplate.opsForValue().get(pendingUserId) != null) {
-      // this.redisTemplate.opsForValue().getAndDelete(pendingUserId);
-      // }
-      // this.redisTemplate.opsForValue().set(pendingUserId, strNewPendingUser, 15,
-      // TimeUnit.MINUTES);
       String defaultName = data.email().split("@")[0];
       UserModel newUser = new UserModel(data.email(), password, hashedOtp, defaultName);
       this.userRepository.save(newUser);
 
       String html = EmailTemplateLoader.loadTemplate("verification_email.html");
-      String msg = html.replace("123456", otpCOde);
+      String msg = html.replace("123456", otpCode);
       this.emailService.sendHtmlEmail(email, "Lit Envs Verification", msg);
       return new ResponseDto(200, "Verification code sent to " + email, null);
     } catch (Exception e) {
-      System.out.println(e);
+      log.error("Failed to register user {}: {}", email, e.getMessage(), e);
       return new ResponseDto(400, "Registration failed", null);
     }
   }
 
   public ResponseDto verifyUser(VerifyUserDto data) {
-    System.out.println(data.token());
-    // String pendingUserId = "pending_user_" + data.email();
     Optional<UserModel> pendingUserOtp = this.userRepository.findByEmail(data.email());
 
     if (pendingUserOtp.isEmpty()) {
-      // Map<String, String> emailPayload = new HashMap<>();
-      // emailPayload.put("email", data.email());
-      return new ResponseDto(400, "Invalid code or code", null);
+      return new ResponseDto(400, "Invalid code or user not found", null);
     }
     try {
-      // PendingUserDto userObj = this.objectMapper.readValue(pendingUser.toString(),
-      // PendingUserDto.class);
       UserModel pendingUser = pendingUserOtp.get();
       if (this.passwordEncoder.matches(data.token(), pendingUser.getOtp())) {
         pendingUser.setOtp(null);
         this.userRepository.save(pendingUser);
-        return new ResponseDto(200, "Account has been created successfully", null);
+        return new ResponseDto(200, "Account has been verified successfully", null);
       }
     } catch (Exception e) {
-      System.out.println(e);
-      System.out.println(e.getStackTrace());
-      return new ResponseDto(500, "Invalid code or code", null);
+      log.error("Error verifying user {}: {}", data.email(), e.getMessage(), e);
+      return new ResponseDto(500, "Verification process error", null);
     }
-    return new ResponseDto(400, "Invalid code or code", null);
+    return new ResponseDto(400, "Invalid verification code", null);
   }
 
   public AuthResponseDto getToken(String email, String password) {
