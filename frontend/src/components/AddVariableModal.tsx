@@ -3,12 +3,15 @@ import { RxCross2, RxReload } from "react-icons/rx";
 import axios from "axios";
 import { BACKEND_URL } from "../configs/constants";
 import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../contexts/ToastContext";
 
 interface AddVariableModalProps {
   projectId: string;
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (key: string, value: string) => void;
+  environment?: string;
+  scope?: string;
 }
 
 const AddVariableModal: React.FC<AddVariableModalProps> = ({
@@ -16,20 +19,35 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
+  environment = "development",
+  scope = "default",
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [envVars, setEnvVars] = useState("");
+  const [err, setErr] = useState<string | null>(null);
   const { user } = useAuth();
+  const { showToast } = useToast();
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setEnvVars("");
+      setErr(null);
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!envVars.trim()) return;
     setIsLoading(true);
+    setErr(null);
 
     try {
-      const res = await axios.put(
+      await axios.put(
         `${BACKEND_URL}/projects/update-env-data/${projectId}/`,
         {
           envData: envVars,
+          environment,
+          scope,
         },
         {
           headers: {
@@ -38,13 +56,16 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
         },
       );
 
-      console.log(res.data);
       onSubmit("", "");
       setEnvVars("");
       setIsLoading(false);
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      const errMsg =
+        err.response?.data?.message || "Failed to import environment variables";
+      setErr(errMsg);
+      showToast(errMsg, "error");
       setIsLoading(false);
     }
   };
@@ -52,25 +73,38 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
-      <div className="bg-[#18181b] border border-[#27272a] rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
-        <div className="flex items-center justify-between p-5 border-b border-[#27272a]">
-          <h3 className="text-sm font-bold text-[#f4f4f5]">
-            Add Environment Variables
+    <div className="fixed inset-0 bg-[#09090b]/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-transparent rounded-2xl max-w-lg w-full overflow-hidden p-8 relative space-y-6">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-6 top-6 text-zinc-650 hover:text-white transition-colors p-1.5 rounded-lg"
+        >
+          <RxCross2 className="h-4 w-4" />
+        </button>
+
+        {/* Header */}
+        <div className="space-y-1">
+          <h3 className="text-base font-bold text-white">
+            Bulk Import Environment Variables
           </h3>
-          <button
-            onClick={onClose}
-            className="text-zinc-400 hover:text-white transition-colors p-1 rounded-full hover:bg-zinc-800"
-          >
-            <RxCross2 className="h-4 w-4" />
-          </button>
+          <p className="text-xs text-zinc-500 font-medium">
+            Paste key-value pairs formatted as a standard{" "}
+            <code className="text-zinc-300 font-mono">.env</code> file.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          <div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {err && (
+            <div className="bg-red-950/20 border border-red-900/40 text-red-400 px-4 py-2.5 rounded-xl text-xs font-semibold">
+              {err}
+            </div>
+          )}
+
+          <div className="space-y-2">
             <label
               htmlFor="envVar"
-              className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-semibold text-zinc-400"
             >
               Environment Variables (.env block)
             </label>
@@ -79,39 +113,36 @@ const AddVariableModal: React.FC<AddVariableModalProps> = ({
               required
               value={envVars}
               onChange={(e) => setEnvVars(e.target.value)}
-              rows={10}
+              rows={9}
               placeholder={`API_KEY=your-api-key-here\nDB_HOST=localhost\nDB_PASSWORD=super-secret`}
-              className="block w-full px-3 py-2 border border-[#27272a] bg-[#09090b] text-xs rounded-lg text-[#f4f4f5] placeholder-zinc-650 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono resize-none"
+              className="block w-full px-4 py-3 bg-[#121215]/60 focus:bg-[#16161a]/60 text-xs rounded-xl text-white placeholder-zinc-700 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-all font-mono border border-zinc-900/40 resize-none leading-relaxed"
             />
-            <p className="mt-1.5 text-[11px] text-zinc-450">
-              Paste standard{" "}
-              <code className="p-0.5 bg-[#09090b] rounded text-zinc-300 font-mono">
-                .env
-              </code>{" "}
-              formatted key-value pairs to merge/update.
+            <p className="text-xs text-zinc-500 font-medium">
+              Standard key=value pairs will be parsed and encrypted automatically.
             </p>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-[#27272a]">
+          {/* Action Footer Row */}
+          <div className="flex justify-end items-center space-x-4 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-1.5 text-xs font-semibold text-zinc-300 bg-[#09090b] border border-[#27272a] rounded-full hover:bg-zinc-900 transition-colors duration-150"
+              className="text-zinc-550 hover:text-white text-xs font-bold transition-all py-2"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading || !envVars.trim()}
-              className="px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors duration-150"
+              className="px-5 py-2.5 text-xs font-bold text-white btn-cyan-glossy rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-all"
             >
               {isLoading ? (
                 <>
                   <RxReload className="h-3.5 w-3.5 mr-2 animate-spin text-white" />
-                  Adding...
+                  Importing...
                 </>
               ) : (
-                "Add Variables"
+                "Import Variables"
               )}
             </button>
           </div>

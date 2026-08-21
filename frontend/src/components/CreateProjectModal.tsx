@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { RxCross2, RxReload } from "react-icons/rx";
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../contexts/AuthContext";
 import { BACKEND_URL } from "../configs/constants";
 
@@ -25,6 +26,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     if (isOpen) {
@@ -87,6 +89,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       setCollaborators([]);
       setIsLoading(false);
       onClose();
+      queryClient.invalidateQueries({ queryKey: ["activeProjects"] });
       fetchProjects();
     } catch (error) {
       console.log(error);
@@ -124,20 +127,15 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             >
               Project Name
             </label>
-            <div className="relative flex items-center">
-              <div className="absolute left-3.5 h-6 w-6 rounded-lg bg-zinc-950 border border-zinc-900/60 flex items-center justify-center text-[9px] font-black text-cyan-400 font-mono tracking-tight shrink-0 select-none">
-                {name ? name.substring(0, 2).toUpperCase() : "??"}
-              </div>
-              <input
-                id="name"
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="block w-full pl-12 pr-4 py-2.5 bg-[#121215]/60 focus:bg-[#16161a]/60 text-xs rounded-xl text-white placeholder-zinc-700 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-all font-mono"
-                placeholder="my-awesome-project"
-              />
-            </div>
+            <input
+              id="name"
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="block w-full px-4 py-2.5 bg-[#121215]/60 focus:bg-[#16161a]/60 text-xs rounded-xl text-white placeholder-zinc-700 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-all font-mono"
+              placeholder="my-awesome-project"
+            />
           </div>
 
           {/* Description Input */}

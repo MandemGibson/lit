@@ -48,8 +48,20 @@ public class ProjectHistoryModel {
   @Field(name = "deleted_keys")
   private List<String> deletedKeys = new ArrayList<>();
 
+  @Field(name = "environment")
+  private String environment = "development";
+
+  @Field(name = "scope")
+  private String scope = "default";
+
   public ProjectHistoryModel(String projectId, String userId, String userName, String userEmail,
       List<String> addedKeys, List<String> modifiedKeys, List<String> deletedKeys) {
+    this(projectId, userId, userName, userEmail, addedKeys, modifiedKeys, deletedKeys, "development", "default");
+  }
+
+  public ProjectHistoryModel(String projectId, String userId, String userName, String userEmail,
+      List<String> addedKeys, List<String> modifiedKeys, List<String> deletedKeys,
+      String environment, String scope) {
     this.projectId = projectId;
     this.userId = userId;
     this.userName = userName;
@@ -58,5 +70,8 @@ public class ProjectHistoryModel {
     this.addedKeys = addedKeys != null ? addedKeys : new ArrayList<>();
     this.modifiedKeys = modifiedKeys != null ? modifiedKeys : new ArrayList<>();
     this.deletedKeys = deletedKeys != null ? deletedKeys : new ArrayList<>();
+    this.environment = environment != null && !environment.trim().isEmpty() ? environment : "development";
+    this.scope = scope != null && !scope.trim().isEmpty() ? scope : "default";
   }
 }
+

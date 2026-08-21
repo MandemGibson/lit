@@ -74,27 +74,39 @@ public class ProjectService {
   }
 
   public ResponseDto pullEnvContent(String projectId) {
+    return pullEnvContent(projectId, "development", "default");
+  }
+
+  public ResponseDto pullEnvContent(String projectId, String environment, String scope) {
     Optional<ProjectModel> project = this.projectRepo.findById(projectId);
     if (project.isEmpty()) {
       return new ResponseDto(404, "Project not found", null);
     }
-    String dotEnvData = project.get().getDotEnvData();
-    if (dotEnvData == null || dotEnvData.isEmpty()) {
+    String encryptedEnvData = project.get().getEncryptedEnv(environment, scope);
+    if (encryptedEnvData == null || encryptedEnvData.isEmpty()) {
       return new ResponseDto(200, "successful", "");
     }
-    String decryptedEnv = this.operations.decryptEnvData(dotEnvData);
+    String decryptedEnv = this.operations.decryptEnvData(encryptedEnvData);
     return new ResponseDto(200, "successful", decryptedEnv);
   }
 
   public ResponseDto updateEnvData(String projectId, String envData, String userId) {
+    return updateEnvData(projectId, envData, "development", "default", userId);
+  }
+
+  public ResponseDto updateEnvData(String projectId, String envData, String environment, String scope, String userId) {
     Optional<ProjectModel> project = this.projectRepo.findById(projectId);
     if (project.isPresent()) {
       ProjectModel projectObj = project.get();
       if (projectObj.getOwner().equals(userId) || projectObj.getCollaborators().contains(userId)) {
+        String envKey = (environment != null && !environment.trim().isEmpty()) ? environment.trim().toLowerCase() : "development";
+        String scopeKey = (scope != null && !scope.trim().isEmpty()) ? scope.trim().toLowerCase() : "default";
+
+        String oldEncryptedEnv = projectObj.getEncryptedEnv(envKey, scopeKey);
         String oldDecryptedEnv = "";
-        if (projectObj.getDotEnvData() != null && !projectObj.getDotEnvData().isEmpty()) {
+        if (oldEncryptedEnv != null && !oldEncryptedEnv.isEmpty()) {
           try {
-            oldDecryptedEnv = this.operations.decryptEnvData(projectObj.getDotEnvData());
+            oldDecryptedEnv = this.operations.decryptEnvData(oldEncryptedEnv);
           } catch (Exception e) {
             System.err.println("Failed to decrypt old env data: " + e.getMessage());
           }
@@ -122,7 +134,7 @@ public class ProjectService {
         }
 
         String securedData = this.operations.encryptEnvData(envData);
-        projectObj.setDotEnvData(securedData);
+        projectObj.setEncryptedEnv(envKey, scopeKey, securedData);
         projectObj.setLastUpdated(Instant.now());
 
         String updaterName = "A collaborator";
@@ -144,7 +156,9 @@ public class ProjectService {
             updaterEmail,
             addedKeys,
             modifiedKeys,
-            deletedKeys
+            deletedKeys,
+            envKey,
+            scopeKey
         );
         this.projectHistoryRepo.save(history);
 
@@ -160,7 +174,7 @@ public class ProjectService {
             if (recipient.isSecretUpdatesEnabled()) {
               try {
                 String html = EmailTemplateLoader.loadTemplate("secret_update.html");
-                String msg = html.replace("{{projectName}}", projectObj.getProjectName())
+                String msg = html.replace("{{projectName}}", projectObj.getProjectName() + " (" + envKey + " / " + scopeKey + ")")
                                  .replace("{{updaterName}}", updaterName);
                 this.emailService.sendHtmlEmail(recipient.getEmail(), "Lit Envs - Secret Update Alert", msg);
               } catch (Exception e) {

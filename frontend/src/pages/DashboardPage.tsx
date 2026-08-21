@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -25,6 +25,24 @@ interface Project {
   description?: string;
   cliActivity?: string;
 }
+
+const formatLastUpdated = (dateStr?: string) => {
+  if (!dateStr) return "Recently updated";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "Recently updated";
+
+  const now = new Date();
+  const diffMs = Math.max(0, now.getTime() - date.getTime());
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMins < 1) return "Updated just now";
+  if (diffMins < 60) return `Updated ${diffMins}m ago`;
+  if (diffHours < 24) return `Updated ${diffHours}h ago`;
+  if (diffDays < 7) return `Updated ${diffDays}d ago`;
+  return `Updated ${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+};
 
 const DashboardPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -179,16 +197,11 @@ const DashboardPage: React.FC = () => {
               >
                 <div className="p-5 flex flex-col h-full justify-between">
                   <div>
-                    {/* Header: Monogram & Name */}
-                    <div className="flex items-center mb-3">
-                      <div className="h-8 w-8 rounded-xl bg-zinc-950/80 border border-zinc-900/60 flex items-center justify-center text-[10px] font-black text-cyan-400 font-mono tracking-tight shadow-inner">
-                        {project.projectName.substring(0, 2).toUpperCase()}
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors duration-250 uppercase tracking-wider font-mono">
-                          {project.projectName}
-                        </h3>
-                      </div>
+                    {/* Header: Name */}
+                    <div className="mb-3">
+                      <h3 className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors duration-250 uppercase tracking-wider font-mono">
+                        {project.projectName}
+                      </h3>
                     </div>
 
                     <p className="mt-1 text-[10.5px] text-zinc-500 line-clamp-2 leading-relaxed font-medium">
@@ -219,6 +232,16 @@ const DashboardPage: React.FC = () => {
                         project.collaborators.length <= 1
                           ? "member"
                           : "members"}
+                      </span>
+
+                      <span className="text-zinc-700 select-none">•</span>
+
+                      <span className="font-mono text-zinc-500">
+                        {formatLastUpdated(
+                          project.lastUpdated ||
+                            (project as any).updatedAt ||
+                            (project as any).createdOn,
+                        )}
                       </span>
                     </div>
 

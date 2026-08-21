@@ -30,6 +30,9 @@ public class ProjectModel {
   @Nullable
   private String dotEnvData;
 
+  @Field(name = "envs_data")
+  private java.util.Map<String, java.util.Map<String, String>> envsData = new java.util.HashMap<>();
+
   @Field(name = "owner")
   private String owner;
   //
@@ -121,4 +124,45 @@ public class ProjectModel {
     this.updatedByUserName = updatedByUserName;
   }
 
+  public java.util.Map<String, java.util.Map<String, String>> getEnvsData() {
+    return envsData;
+  }
+
+  public void setEnvsData(java.util.Map<String, java.util.Map<String, String>> envsData) {
+    this.envsData = envsData;
+  }
+
+  public String getEncryptedEnv(String environment, String scope) {
+    String envKey = (environment != null && !environment.trim().isEmpty()) ? environment.trim().toLowerCase() : "development";
+    String scopeKey = (scope != null && !scope.trim().isEmpty()) ? scope.trim().toLowerCase() : "default";
+
+    if (envsData != null && envsData.containsKey(envKey)) {
+      java.util.Map<String, String> scopeMap = envsData.get(envKey);
+      if (scopeMap != null && scopeMap.containsKey(scopeKey)) {
+        return scopeMap.get(scopeKey);
+      }
+    }
+    // Backward compatibility fallback for default environment & scope
+    if ("development".equals(envKey) && "default".equals(scopeKey)) {
+      return this.dotEnvData;
+    }
+    return null;
+  }
+
+  public void setEncryptedEnv(String environment, String scope, String encryptedData) {
+    String envKey = (environment != null && !environment.trim().isEmpty()) ? environment.trim().toLowerCase() : "development";
+    String scopeKey = (scope != null && !scope.trim().isEmpty()) ? scope.trim().toLowerCase() : "default";
+
+    if (this.envsData == null) {
+      this.envsData = new java.util.HashMap<>();
+    }
+    this.envsData.computeIfAbsent(envKey, k -> new java.util.HashMap<>()).put(scopeKey, encryptedData);
+
+    // Keep dotEnvData in sync for legacy readers if updating development/default
+    if ("development".equals(envKey) && "default".equals(scopeKey)) {
+      this.dotEnvData = encryptedData;
+    }
+  }
+
 }
+

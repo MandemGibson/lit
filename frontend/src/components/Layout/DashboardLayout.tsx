@@ -41,9 +41,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="h-[100dvh] bg-[#09090b] text-[#f4f4f5] flex flex-col font-sans overflow-hidden relative">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-[#f4f4f5] flex flex-col font-sans relative transition-colors">
       {/* Top Header Navigation */}
-      <header className="absolute top-0 left-0 right-0 h-16 bg-[#09090b]/80 backdrop-blur-md flex items-center justify-between px-6 z-40">
+      <header className="sticky top-0 left-0 right-0 h-16 bg-[#09090b]/80 backdrop-blur-md flex items-center justify-between px-6 z-40">
         {/* Left Side: Logo */}
         <Link to="/" className="flex items-center space-x-2.5 group">
           <div className="bg-[#18181b] p-0.5 rounded-md border border-[#27272a] group-hover:border-zinc-500 transition-colors duration-200 flex items-center justify-center flex-shrink-0">
@@ -171,7 +171,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-w-0 overflow-y-auto pt-24 pb-8 px-6 md:px-8">
+      <main className="flex-1 min-w-0 pt-8 pb-12 px-6 md:px-8">
         <div className="max-w-5xl mx-auto">
           {children}
         </div>

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.bookmie.lit.configs.components.CurrentUser;
 import com.bookmie.lit.projects.dtos.*;
 import com.bookmie.lit.utils.dtos.ResponseDto;
@@ -51,16 +53,30 @@ public class ProjectController {
   }
 
   @PutMapping("/update-env-data/{projectId}/")
-  public ResponseEntity<ResponseDto> updateEnvData(@PathVariable String projectId,
-      @RequestBody UpdateEnvDataDto requestData) {
-    ResponseDto response = this.projectService.updateEnvData(projectId, requestData.envData(),
+  public ResponseEntity<ResponseDto> updateEnvData(
+      @PathVariable String projectId,
+      @RequestBody UpdateEnvDataDto requestData,
+      @RequestParam(required = false, defaultValue = "development") String environment,
+      @RequestParam(required = false, defaultValue = "default") String scope) {
+
+    String targetEnv = requestData.environment() != null ? requestData.environment() : environment;
+    String targetScope = requestData.scope() != null ? requestData.scope() : scope;
+
+    ResponseDto response = this.projectService.updateEnvData(
+        projectId,
+        requestData.envData(),
+        targetEnv,
+        targetScope,
         this.currentUser.getId());
     return ResponseEntity.status(response.statusCode()).body(response);
   }
 
   @GetMapping("/pull-env-data/{projectId}")
-  public ResponseEntity<ResponseDto> pullEnvData(@PathVariable String projectId) {
-    ResponseDto res = this.projectService.pullEnvContent(projectId);
+  public ResponseEntity<ResponseDto> pullEnvData(
+      @PathVariable String projectId,
+      @RequestParam(required = false, defaultValue = "development") String environment,
+      @RequestParam(required = false, defaultValue = "default") String scope) {
+    ResponseDto res = this.projectService.pullEnvContent(projectId, environment, scope);
     return ResponseEntity.status(res.statusCode()).body(res);
   }
 
